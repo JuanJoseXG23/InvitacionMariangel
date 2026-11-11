@@ -76,3 +76,132 @@ export function escucharEvento(cb) {
 export function guardarEventoDemo(datos) {
   guardarJSON(CLAVE_DEMO_EVENTO, datos);
 }
+
+/* ═════════════ Confirmaciones y velas ═════════════ */
+
+const aMs = (v) => (typeof v === 'number' ? v : v?.toMillis ? v.toMillis() : Date.now());
+const normalizar = (id, d) => ({ id, ...d, creadoEn: aMs(d.creadoEn), actualizadoEn: aMs(d.actualizadoEn ?? d.creadoEn) });
+const ordenar = (arr) => arr.sort((a, b) => a.creadoEn - b.creadoEn || (a.id < b.id ? -1 : 1));
+
+// ── Almacén local para el modo demo (persistido en localStorage, sincronizado entre pestañas) ──
+const claveDemo = (col) => `mariangel-demo-${col}`;
+const oyentesDemo = { confirmaciones: new Set(), velas: new Set() };
+const leerDemo = (col) => leerJSON(claveDemo(col)) || {};
+const emitirDemo = (col) => {
+  const arr = ordenar(Object.entries(leerDemo(col)).map(([id, d]) => normalizar(id, d)));
+  oyentesDemo[col].forEach((cb) => cb(arr));
+};
+const escribirDemo = (col, id, datos) => {
+  const todo = leerDemo(col);
+  if (datos === null) delete todo[id]; else todo[id] = datos;
+  guardarJSON(claveDemo(col), todo);
+  emitirDemo(col);
+};
+
+let demoListo = null;
+function prepararDemo() {
+  if (demoListo) return demoListo;
+  demoListo = (async () => {
+    addEventListener('storage', (e) => {
+      for (const col of Object.keys(oyentesDemo)) if (e.key === claveDemo(col)) emitirDemo(col);
+    });
+    if (!DEMO_EXPLICITO) return;
+    const demo = await import('./demo.js');
+    if (localStorage.getItem(claveDemo('confirmaciones')) === null) {
+      const { confirmaciones, velas } = demo.sembrar();
+      guardarJSON(claveDemo('confirmaciones'), confirmaciones);
+      guardarJSON(claveDemo('velas'), velas);
+    }
+    demo.simularLlegadas({
+      agregarConfirmacion: (id, d) => escribirDemo('confirmaciones', id, d),
+      agregarVela: (id, d) => escribirDemo('velas', id, d),
+    });
+  })();
+  return demoListo;
+}
+
+/** Reinicia los datos del demo (útil para volver a ver las bancas vacías/llenas). */
+export function reiniciarDemo() {
+  localStorage.removeItem(claveDemo('confirmaciones'));
+  localStorage.removeItem(claveDemo('velas'));
+  localStorage.removeItem('mariangel-demo-uid');
+}
+
+/** UID anónimo de este dispositivo (Firebase Anonymous Auth o id local en demo). */
+let _uid = null;
+export function obtenerUid() {
+  if (_uid) return _uid;
+  _uid = (async () => {
+    if (MODO_DEMO) {
+      let id = localStorage.getItem('mariangel-demo-uid');
+      if (!id) { id = `yo-${Math.random().toString(36).slice(2, 10)}`; localStorage.setItem('mariangel-demo-uid', id); }
+      return id;
+    }
+    const { auth, au } = await firebase();
+    if (auth.currentUser) return auth.currentUser.uid;
+    await au.setPersistence(auth, au.browserLocalPersistence).catch(() => {});
+    const yaHay = await new Promise((res) => {
+      const parar = au.onAuthStateChanged(auth, (u) => { parar(); res(u); });
+    });
+    if (yaHay) return yaHay.uid;
+    const cred = await au.signInAnonymously(auth);
+    return cred.user.uid;
+  })();
+  _uid.catch(() => { _uid = null; });
+  return _uid;
+}
+
+/** Escucha una colección ('confirmaciones' | 'velas') en vivo, ordenada por creadoEn. */
+export function escucharColeccion(col, cb) {
+  if (MODO_DEMO) {
+    oyentesDemo[col].add(cb);
+    prepararDemo().then(() => emitirDemo(col));
+    return () => oyentesDemo[col].delete(cb);
+  }
+  let cancelar = () => {};
+  let activo = true;
+  firebase().then(({ db, fs }) => {
+    if (!activo) return;
+    const q = fs.query(fs.collection(db, col), fs.orderBy('creadoEn', 'asc'));
+    cancelar = fs.onSnapshot(q, (snap) => {
+      cb(ordenar(snap.docs.map((d) => normalizar(d.id, d.data({ serverTimestamps: 'estimate' })))));
+    }, (err) => console.warn(`[${col}]`, err));
+  }).catch((err) => console.warn('Firebase no disponible:', err));
+  return () => { activo = false; cancelar(); };
+}
+
+/** Crea o actualiza la confirmación del dispositivo (id del documento = uid anónimo). */
+export async function guardarConfirmacion(datos, existe) {
+  const uid = await obtenerUid();
+  if (MODO_DEMO) {
+    await new Promise((r) => setTimeout(r, 450));
+    const previo = leerDemo('confirmaciones')[uid];
+    const t = Date.now();
+    escribirDemo('confirmaciones', uid, { ...datos, creadoEn: previo?.creadoEn ?? t, actualizadoEn: t });
+    return uid;
+  }
+  const { db, fs } = await firebase();
+  const ref = fs.doc(db, 'confirmaciones', uid);
+  if (existe) await fs.updateDoc(ref, { ...datos, actualizadoEn: fs.serverTimestamp() });
+  else await fs.setDoc(ref, { ...datos, creadoEn: fs.serverTimestamp(), actualizadoEn: fs.serverTimestamp() });
+  return uid;
+}
+
+export async function borrarConfirmacion() {
+  const uid = await obtenerUid();
+  if (MODO_DEMO) { escribirDemo('confirmaciones', uid, null); return; }
+  const { db, fs } = await firebase();
+  await fs.deleteDoc(fs.doc(db, 'confirmaciones', uid));
+}
+
+/** Una vela por dispositivo. */
+export async function encenderVela(nombre) {
+  const uid = await obtenerUid();
+  if (MODO_DEMO) { escribirDemo('velas', uid, { nombre, creadoEn: Date.now() }); return uid; }
+  const { db, fs } = await firebase();
+  await fs.setDoc(fs.doc(db, 'velas', uid), { nombre, creadoEn: fs.serverTimestamp() });
+  return uid;
+}
+
+/** Para el panel admin (demo): borrar cualquier documento. */
+export function borrarDemo(col, id) { escribirDemo(col, id, null); }

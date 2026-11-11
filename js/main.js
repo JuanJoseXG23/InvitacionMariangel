@@ -1,5 +1,9 @@
 import { $, $$, fechaLarga, fechaCorta, horaBonita, enlaceMaps, capitalizar } from './util.js';
-import { escucharEvento, DEMO_EXPLICITO } from './data.js';
+import { escucharEvento, escucharColeccion, obtenerUid, DEMO_EXPLICITO, reiniciarDemo } from './data.js';
+import { construirSprite } from './avatares.js';
+import { iniciarBancas, actualizarBancas, setMiUid } from './bancas.js';
+import { iniciarRSVP, actualizarRSVP } from './rsvp.js';
+import { iniciarVelas, actualizarVelas, actualizarMensajes, setMiUidVelas, setNombreVela } from './velas.js';
 import { alCambiarSonido, setSilenciado, estaSilenciado } from './audio.js';
 import { iniciarPortada } from './portada.js';
 import { iniciarAltar, ponerFoto } from './altar.js';
@@ -19,6 +23,7 @@ function calculados(e) {
     fechaCorta: fechaCorta(e.fecha),
     fechaPuntos: d ? `${+d} · ${meses[+mes - 1]} · ${a}` : '',
     misaHoraBonita: horaBonita(e.misaHora),
+    fechaLimiteBonita: fechaCorta(e.fechaLimite),
     fiestaHoraBonita: horaBonita(e.fiestaHora) || 'Hora por confirmar',
     misaMaps: enlaceMaps(e.misaMaps, e.misaLugar, e.misaDireccion),
     fiestaMaps: enlaceMaps(e.fiestaMaps, e.fiestaLugar, e.fiestaDireccion),
@@ -49,6 +54,39 @@ function render(e) {
   $('.roseton')?.setAttribute('aria-label', `Vitral con la foto de ${e.nombre}`);
   ponerFoto(e.foto);
   iniciarCuenta(e.fecha, e.misaHora);
+  actualizarRSVP({ evento: e });
+}
+
+/* ───────────── Confirmaciones y velas en vivo ───────────── */
+let uid = null;
+let confirmaciones = [];
+let velas = [];
+
+function alCambiarConfirmaciones(lista) {
+  confirmaciones = lista;
+  actualizarBancas(lista);
+  actualizarMensajes(lista);
+  const mia = uid ? lista.find((c) => c.id === uid) || null : undefined;
+  actualizarRSVP({ mia });
+  if (mia) setNombreVela(mia.nombre);
+}
+
+function iniciarEnVivo() {
+  construirSprite();
+  iniciarBancas();
+  iniciarRSVP();
+  iniciarVelas();
+  escucharColeccion('confirmaciones', alCambiarConfirmaciones);
+  escucharColeccion('velas', (lista) => { velas = lista; actualizarVelas(lista); });
+  obtenerUid()
+    .then((id) => {
+      uid = id;
+      setMiUid(id);
+      setMiUidVelas(id);
+      alCambiarConfirmaciones(confirmaciones);
+      actualizarVelas(velas);
+    })
+    .catch((err) => console.warn('No se pudo iniciar sesión anónima:', err));
 }
 
 /* ───────────── Calendario ───────────── */
@@ -105,9 +143,14 @@ function iniciarRevelado() {
 if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
 window.scrollTo(0, 0);
 
-if (DEMO_EXPLICITO) $('.insignia-demo').hidden = false;
+if (DEMO_EXPLICITO) {
+  const insignia = $('.insignia-demo');
+  insignia.hidden = false;
+  if (new URLSearchParams(location.search).get('reiniciar') === '1') reiniciarDemo();
+}
 iniciarBotonSonido();
 iniciarAltar();
+iniciarEnVivo();
 escucharEvento(render);
 
 $$('[data-ics]').forEach((b) => b.addEventListener('click', () => alAgregarCalendario(b.dataset.ics)));

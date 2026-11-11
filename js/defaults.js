@@ -36,6 +36,7 @@ export const EVENTO_DEFECTO = Object.freeze({
   // Confirmaciones
   fechaLimite: '2026-12-01', // último día para confirmar (inclusive)
   registroAbierto: true,
+  ignorarFechaLimite: false, // el admin puede reabrir tras la fecha límite
   whatsapp: '573002513594', // (con indicativo, sin +)
 
   // Cierre

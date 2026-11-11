@@ -425,6 +425,174 @@
       </div>
     </section>
 
+    <!-- 5. Las bancas -->
+    <section id="bancas" class="bancas" aria-labelledby="bancas-titulo">
+      <header class="seccion-cabeza revelar">
+        <p class="eyebrow">La iglesia se va llenando</p>
+        <h2 id="bancas-titulo" class="seccion-titulo">Las bancas</h2>
+        <svg class="ornamento" aria-hidden="true"><use href="#orn-trigo"/></svg>
+      </header>
+
+      <div class="iglesia-interior">
+        <div class="altar-mayor" aria-hidden="true">
+          <svg viewBox="0 0 360 170" preserveAspectRatio="xMidYMax meet">
+            <defs>
+              <radialGradient id="am-luz" cx=".5" cy=".4" r=".6"><stop offset="0" stop-color="#FFF6DC"/><stop offset="1" stop-color="#FFF6DC" stop-opacity="0"/></radialGradient>
+              <linearGradient id="am-vitral" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9DBBE2"/><stop offset=".55" stop-color="#F0BACB"/><stop offset="1" stop-color="#F3DA9E"/></linearGradient>
+            </defs>
+            <ellipse cx="180" cy="70" rx="170" ry="80" fill="url(#am-luz)"/>
+            <path d="M120 150 V60 A60 60 0 0 1 240 60 V150" fill="#F7EEDF" stroke="#D9C6A1" stroke-width="3"/>
+            <path d="M156 118 V58 A24 24 0 0 1 204 58 V118 Z" fill="url(#am-vitral)" stroke="#8D7350" stroke-width="2"/>
+            <path d="M180 34 V118 M156 80 H204" stroke="#8D7350" stroke-width="1.5"/>
+            <path d="M180 50 V96 M168 64 H192" stroke="#C59A45" stroke-width="5" stroke-linecap="round"/>
+            <rect x="110" y="128" width="140" height="22" rx="3" fill="#FFFDF8" stroke="#D9C6A1" stroke-width="2"/>
+            <path d="M118 134 H242" stroke="#E2C27A" stroke-width="2"/>
+            <g class="am-vela"><rect x="126" y="104" width="7" height="24" rx="1.5" fill="#FFFDF8" stroke="#D9C6A1"/><path class="am-llama" d="M129.5 92 C133 98 133 102 129.5 104 C126 102 126 98 129.5 92 Z" fill="#F6C55A"/></g>
+            <g class="am-vela"><rect x="227" y="104" width="7" height="24" rx="1.5" fill="#FFFDF8" stroke="#D9C6A1"/><path class="am-llama" d="M230.5 92 C234 98 234 102 230.5 104 C227 102 227 98 230.5 92 Z" fill="#F6C55A"/></g>
+            <g fill="#F4C9D5"><circle cx="146" cy="124" r="5"/><circle cx="152" cy="120" r="4"/><circle cx="140" cy="121" r="4"/><circle cx="214" cy="124" r="5"/><circle cx="208" cy="120" r="4"/><circle cx="220" cy="121" r="4"/></g>
+            <g fill="#FFFFFF"><circle cx="146" cy="119" r="2.6"/><circle cx="214" cy="119" r="2.6"/></g>
+            <path d="M40 160 H320" stroke="#DCCBAB" stroke-width="2"/>
+            <rect x="60" y="150" width="240" height="10" fill="#EFE4D1"/>
+          </svg>
+        </div>
+
+        <p class="contador revelar" aria-live="polite">
+          <span class="contador-num" data-bancas="total">0</span>
+          <span class="contador-txt" data-bancas="texto">personas ya confirmaron</span>
+        </p>
+        <p class="contador-sub" data-bancas="familias"></p>
+
+        <div class="nave" role="group" aria-label="Bancas de la iglesia con los invitados que confirmaron"></div>
+        <p class="nave-pie"><a class="btn btn-oro" href="#confirmar">Quiero mi lugar en la banca</a></p>
+      </div>
+    </section>
+
+    <!-- 6. Confirma tu asistencia -->
+    <section id="confirmar" class="confirmar" aria-labelledby="confirmar-titulo">
+      <header class="seccion-cabeza revelar">
+        <p class="eyebrow">Confirma tu asistencia</p>
+        <h2 id="confirmar-titulo" class="seccion-titulo">¿Nos acompañas?</h2>
+        <p class="seccion-intro">Confírmanos antes del <strong data-t="fechaLimiteBonita">1 de diciembre</strong> y aparecerás sentado en una de las bancas.</p>
+      </header>
+
+      <div class="rsvp-caja revelar">
+        <!-- Cerrado -->
+        <div class="rsvp-cerrado" data-rsvp="cerrado" hidden>
+          <svg class="rsvp-cerrado-icono" aria-hidden="true"><use href="#i-calendario"/></svg>
+          <h3>El registro de confirmaciones ya cerró</h3>
+          <p>Gracias por tu cariño. Si quieres contarnos algo, escríbenos por WhatsApp.</p>
+          <a class="btn btn-oro" data-whatsapp href="#" target="_blank" rel="noopener">Escribir por WhatsApp</a>
+        </div>
+
+        <!-- Gracias / ya confirmado -->
+        <div class="rsvp-gracias" data-rsvp="gracias" hidden tabindex="-1">
+          <div class="rsvp-gracias-avatar" aria-hidden="true"></div>
+          <h3 data-rsvp="gracias-titulo">¡Gracias!</h3>
+          <p data-rsvp="gracias-texto">Ya tienes tu lugar en la iglesia.</p>
+          <div class="rsvp-gracias-acciones">
+            <a class="btn btn-oro" href="#bancas" data-rsvp="ver-lugar">Ver mi lugar en la banca</a>
+            <button class="btn btn-linea" type="button" data-rsvp="editar">Editar mi confirmación</button>
+            <button class="btn btn-texto" type="button" data-rsvp="cancelar">Ya no puedo asistir</button>
+          </div>
+        </div>
+
+        <!-- Formulario -->
+        <form class="rsvp" data-rsvp="formulario" novalidate>
+          <div class="hp" aria-hidden="true">
+            <label>No llenes este campo <input name="sitio" type="text" tabindex="-1" autocomplete="off"></label>
+          </div>
+
+          <div class="campo">
+            <label for="rsvp-nombre">Tu nombre y apellido</label>
+            <input id="rsvp-nombre" name="nombre" type="text" maxlength="60" autocomplete="name" autocapitalize="words" required aria-describedby="err-nombre" placeholder="Ej. Ana Restrepo">
+            <p class="campo-error" id="err-nombre" role="alert"></p>
+          </div>
+
+          <fieldset class="campo">
+            <legend>¿Cuántos vienen, contándote a ti?</legend>
+            <div class="contador-personas">
+              <button type="button" class="paso" data-paso="-1" aria-label="Una persona menos">−</button>
+              <output id="rsvp-personas-ver" aria-live="polite">1</output>
+              <button type="button" class="paso" data-paso="1" aria-label="Una persona más">+</button>
+              <input type="hidden" name="personas" value="1">
+            </div>
+            <p class="campo-ayuda" data-rsvp="personas-ayuda">Solo tú</p>
+          </fieldset>
+
+          <div class="acompanantes" data-rsvp="acompanantes"></div>
+
+          <fieldset class="campo">
+            <legend>Elige tu personaje</legend>
+            <div class="avatares" data-rsvp="avatares"></div>
+          </fieldset>
+
+          <div class="campo">
+            <label for="rsvp-mensaje">Un mensaje para Mariangel <span class="opcional">(opcional)</span></label>
+            <textarea id="rsvp-mensaje" name="mensaje" rows="3" maxlength="280" aria-describedby="rsvp-mensaje-cuenta" placeholder="Unas palabras de cariño o una bendición…"></textarea>
+            <p class="campo-ayuda campo-cuenta" id="rsvp-mensaje-cuenta"><span data-rsvp="cuenta">0</span>/280</p>
+          </div>
+
+          <button class="btn btn-oro btn-grande" type="submit" data-rsvp="enviar">Aquí estaré</button>
+          <p class="rsvp-estado" role="status" data-rsvp="estado"></p>
+          <button class="btn btn-texto" type="button" data-rsvp="volver" hidden>Volver sin cambios</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- 7. Una vela para Mariangel -->
+    <section id="velas" class="velas" aria-labelledby="velas-titulo">
+      <header class="seccion-cabeza revelar">
+        <p class="eyebrow eyebrow-claro">Una luz para ella</p>
+        <h2 id="velas-titulo" class="seccion-titulo">Una vela para Mariangel</h2>
+        <p class="seccion-intro">Cada vela es una oración por ella en este día tan especial.</p>
+      </header>
+
+      <div class="vela-propia revelar">
+        <svg class="vela-grande" viewBox="0 0 120 220" aria-hidden="true">
+          <defs>
+            <linearGradient id="vg-cera" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#EFE5D3"/><stop offset=".45" stop-color="#FFFDF7"/><stop offset="1" stop-color="#E4D7C0"/></linearGradient>
+            <radialGradient id="vg-halo" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#FFE7A8" stop-opacity=".9"/><stop offset=".4" stop-color="#FFD27A" stop-opacity=".35"/><stop offset="1" stop-color="#FFD27A" stop-opacity="0"/></radialGradient>
+            <linearGradient id="vg-llama" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#F08A3C"/><stop offset=".35" stop-color="#FFC24D"/><stop offset=".8" stop-color="#FFF4C9"/><stop offset="1" stop-color="#FFFFFF"/></linearGradient>
+          </defs>
+          <circle class="vg-halo" cx="60" cy="52" r="60" fill="url(#vg-halo)"/>
+          <rect x="34" y="80" width="52" height="128" rx="6" fill="url(#vg-cera)"/>
+          <path d="M34 92 Q40 98 46 90 Q50 100 56 92 V86 H34 Z" fill="#F7F0E3"/>
+          <rect x="34" y="150" width="52" height="8" fill="#E2C27A" opacity=".9"/>
+          <g transform="translate(60 128)" fill="#D2AE63">
+            <path d="M0 -14 V14" stroke="#C49C52" stroke-width="1.2"/>
+            <ellipse cx="-3" cy="-6" rx="2" ry="4.4" transform="rotate(-24 -3 -6)"/><ellipse cx="3" cy="-6" rx="2" ry="4.4" transform="rotate(24 3 -6)"/>
+            <ellipse cx="-3" cy="1" rx="2" ry="4.4" transform="rotate(-24 -3 1)"/><ellipse cx="3" cy="1" rx="2" ry="4.4" transform="rotate(24 3 1)"/>
+            <ellipse cx="0" cy="-13" rx="1.8" ry="4"/>
+          </g>
+          <path d="M60 80 V68" stroke="#3A2E24" stroke-width="2" stroke-linecap="round"/>
+          <g class="vg-llama">
+            <path d="M60 20 C74 42 72 60 60 68 C48 60 46 42 60 20 Z" fill="url(#vg-llama)"/>
+            <path d="M60 44 C65 52 64 60 60 64 C56 60 55 52 60 44 Z" fill="#FFFFFF" opacity=".9"/>
+          </g>
+          <ellipse cx="60" cy="210" rx="44" ry="6" fill="#C9A35C" opacity=".5"/>
+        </svg>
+
+        <div class="vela-form" data-vela="form">
+          <label class="sr-only" for="vela-nombre">Tu nombre (opcional)</label>
+          <input id="vela-nombre" type="text" maxlength="60" placeholder="Tu nombre (opcional)" autocomplete="given-name">
+          <button class="btn btn-oro btn-grande" type="button" data-vela="encender">Enciende una vela</button>
+        </div>
+        <p class="vela-hecha" data-vela="hecha" hidden>Tu vela ya está encendida. Gracias por tu oración.</p>
+        <p class="velas-cuenta" aria-live="polite"><strong data-vela="total">0</strong> <span data-vela="texto">velas encendidas</span></p>
+      </div>
+
+      <div class="muro">
+        <div class="muro-velas" data-vela="muro" aria-hidden="true"></div>
+        <p class="muro-mas" data-vela="mas" hidden></p>
+        <div class="muro-luces" data-vela="luces" aria-hidden="true"></div>
+      </div>
+
+      <details class="mensajes">
+        <summary>Leer los mensajes para Mariangel (<span data-vela="nmensajes">0</span>)</summary>
+        <ol class="mensajes-lista" data-vela="lista"></ol>
+      </details>
+    </section>
+
     <footer class="pie">
       <svg class="ornamento" aria-hidden="true"><use href="#orn-trigo"/></svg>
       <p class="pie-nombre" data-t="nombre">Mariangel</p>
@@ -432,6 +600,17 @@
     </footer>
   </main>
 
+
+  <div class="ficha" role="dialog" aria-modal="true" aria-labelledby="ficha-nombre" hidden>
+    <div class="ficha-tarjeta">
+      <button class="ficha-cerrar" type="button" aria-label="Cerrar">&times;</button>
+      <div class="ficha-avatar" aria-hidden="true"></div>
+      <h3 id="ficha-nombre"></h3>
+      <p class="ficha-acomp"></p>
+      <p class="ficha-mensaje"></p>
+    </div>
+  </div>
+  <p class="aviso" role="status" aria-live="polite"></p>
   <p class="insignia-demo" hidden>Modo demo</p>
 
   <script type="module" src="js/main.js"></script>
