@@ -8,93 +8,124 @@ const el = (tag, attrs = {}, padre) => {
   return n;
 };
 
-const PLOMO = '#4A3E31';
-const R_FOTO = 80;
+const R_FOTO = 112;
 
-/* ───────────── Rosetón ───────────── */
-function gradRadial(defs, id, stops) {
-  const g = el('radialGradient', { id, cx: '.5', cy: '.45', r: '.6' }, defs);
-  stops.forEach(([o, c]) => el('stop', { offset: o, 'stop-color': c }, g));
+/* ───────────── Marco de la foto: corona de trigo ───────────── */
+function grad(defs, tipo, id, stops, attrs = {}) {
+  const g = el(tipo, { id, ...attrs }, defs);
+  stops.forEach(([o, c, op = 1]) => el('stop', { offset: o, 'stop-color': c, 'stop-opacity': op }, g));
 }
 
 let capaFoto = null;
 
+/** Espiga de trigo en coordenadas locales: base en (0,0), crece hacia -y. */
+function espiga(padre, largo, color) {
+  const g = el('g', {}, padre);
+  el('path', { d: `M0 0 Q1 ${-largo * 0.5} 0 ${-largo}`, stroke: color.tallo, 'stroke-width': 1.4, fill: 'none', 'stroke-linecap': 'round' }, g);
+  const filas = 5;
+  for (let i = 0; i < filas; i++) {
+    const y = -largo + 4 + i * 5.2;
+    const e = 1 - i * 0.04;
+    for (const s of [-1, 1]) {
+      el('ellipse', { cx: s * 2.6, cy: y, rx: 2.4 * e, ry: 5 * e, transform: `rotate(${s * 24} ${s * 2.6} ${y})`, fill: i % 2 ? color.grano : color.grano2 }, g);
+      el('path', { d: `M${s * 3.6} ${y - 4} l${s * 5} -10`, stroke: color.barba, 'stroke-width': 0.6, fill: 'none' }, g);
+    }
+  }
+  el('ellipse', { cx: 0, cy: -largo - 1, rx: 2, ry: 4.6, fill: color.grano2 }, g);
+  return g;
+}
+
+function florecita(padre, x, y, r = 3.2) {
+  const g = el('g', { transform: `translate(${x.toFixed(1)} ${y.toFixed(1)})` }, padre);
+  for (let i = 0; i < 5; i++) {
+    const a = (i / 5) * Math.PI * 2;
+    el('circle', { cx: (Math.cos(a) * r * 0.62).toFixed(2), cy: (Math.sin(a) * r * 0.62).toFixed(2), r: r * 0.5, fill: '#FFFFFF', stroke: '#E8DCC6', 'stroke-width': 0.4 }, g);
+  }
+  el('circle', { r: r * 0.32, fill: '#F2D28A' }, g);
+}
+
 export function construirRoseton(svg) {
   const defs = el('defs', {}, svg);
-  gradRadial(defs, 'v-azul', [[0, '#E4F0FC'], [0.5, '#7CA6D8'], [1, '#2D5A93']]);
-  gradRadial(defs, 'v-rosa', [[0, '#FFEAF0'], [0.5, '#E6A0B5'], [1, '#B05A7A']]);
-  gradRadial(defs, 'v-oro', [[0, '#FFF7DD'], [0.5, '#EDCB7C'], [1, '#B7883A']]);
-  gradRadial(defs, 'v-lila', [[0, '#F2EEFC'], [0.5, '#B9AAE0'], [1, '#7462AE']]);
-  gradRadial(defs, 'v-verde', [[0, '#F1F8EC'], [0.5, '#A9C99A'], [1, '#5E8A58']]);
-  const piedra = el('linearGradient', { id: 'v-piedra', x1: 0, y1: 0, x2: 0, y2: 1 }, defs);
-  el('stop', { offset: 0, 'stop-color': '#FFFBF2' }, piedra);
-  el('stop', { offset: 1, 'stop-color': '#D9C6A1' }, piedra);
-  const brillo = el('radialGradient', { id: 'v-brillo', cx: '.5', cy: '.5', r: '.5' }, defs);
-  el('stop', { offset: 0, 'stop-color': '#fff', 'stop-opacity': '.55' }, brillo);
-  el('stop', { offset: 1, 'stop-color': '#fff', 'stop-opacity': '0' }, brillo);
-  const clipV = el('clipPath', { id: 'v-clip' }, defs);
-  el('circle', { r: 184 }, clipV);
+  grad(defs, 'linearGradient', 'm-oro', [[0, '#F6E2A6'], [0.5, '#D9B062'], [1, '#A97B35']], { x1: 0, y1: 0, x2: 1, y2: 1 });
+  grad(defs, 'radialGradient', 'm-halo', [[0, '#FFFBEF', 1], [0.55, '#FFF3D6', 0.85], [1, '#FFF3D6', 0]]);
+  grad(defs, 'radialGradient', 'v-fondo-foto', [[0, '#FFFDF7'], [0.7, '#F7E9DA'], [1, '#EFD6CF']], { cx: '.5', cy: '.35', r: '.7' });
   const clipF = el('clipPath', { id: 'v-clip-foto' }, defs);
-  el('circle', { r: R_FOTO - 2 }, clipF);
-  const fondoF = el('radialGradient', { id: 'v-fondo-foto', cx: '.5', cy: '.35', r: '.7' }, defs);
-  el('stop', { offset: 0, 'stop-color': '#FFFDF7' }, fondoF);
-  el('stop', { offset: 0.7, 'stop-color': '#F7E9DA' }, fondoF);
-  el('stop', { offset: 1, 'stop-color': '#EFD6CF' }, fondoF);
+  el('circle', { r: R_FOTO - 1 }, clipF);
 
-  // Marco de piedra
-  el('circle', { r: 198, fill: 'url(#v-piedra)' }, svg);
-  el('circle', { r: 198, fill: 'none', stroke: '#C9B48C', 'stroke-width': 1.5 }, svg);
-  el('circle', { r: 186, fill: '#3C3228' }, svg);
+  // Halo de luz suave
+  el('circle', { r: 198, fill: 'url(#m-halo)' }, svg);
 
-  const vitral = el('g', { 'clip-path': 'url(#v-clip)' }, svg);
-  // Fondo de vidrio (entre piezas)
-  el('circle', { r: 186, fill: 'url(#v-azul)', opacity: 0.9 }, vitral);
+  // Corona: dos ramas de trigo que suben desde el lazo hasta la hostia
+  const corona = el('g', { class: 'corona' }, svg);
+  const tonos = [
+    { tallo: '#B8914F', grano: '#E2BE72', grano2: '#CFA457', barba: '#C9A869' },
+    { tallo: '#A9864A', grano: '#D7B066', grano2: '#C2984E', barba: '#BE9C60' },
+  ];
+  const RW = R_FOTO + 30;
+  for (const s of [1, -1]) {
+    // Tallo de la rama
+    const pts = [];
+    for (let t = 0; t <= 1.0001; t += 0.05) {
+      const th = ((180 + s * t * 150) * Math.PI) / 180;
+      pts.push(`${(RW * Math.sin(th)).toFixed(1)} ${(-RW * Math.cos(th)).toFixed(1)}`);
+    }
+    el('path', { d: `M${pts.join(' L')}`, fill: 'none', stroke: '#B8914F', 'stroke-width': 1.6, 'stroke-linecap': 'round' }, corona);
 
-  // Anillo exterior de lóbulos
-  const lobulos = el('g', {}, vitral);
-  for (let i = 0; i < 24; i++) {
-    const a = (i / 24) * Math.PI * 2;
-    el('circle', {
-      class: 'vidrio',
-      cx: (Math.cos(a) * 170).toFixed(2), cy: (Math.sin(a) * 170).toFixed(2), r: 13.5,
-      fill: i % 2 ? 'url(#v-rosa)' : 'url(#v-oro)', stroke: PLOMO, 'stroke-width': 2.4,
-    }, lobulos);
+    const n = 11;
+    for (let k = 0; k < n; k++) {
+      const t = 0.06 + (k / (n - 1)) * 0.9;
+      const thg = 180 + s * t * 150;
+      const th = (thg * Math.PI) / 180;
+      const fuera = k % 2 ? 9 : -6;
+      const r = RW + fuera;
+      const x = r * Math.sin(th), y = -r * Math.cos(th);
+      // Dirección de avance de la rama → rotación de la espiga
+      const dx = s * Math.cos(th), dy = s * Math.sin(th);
+      const phi = (Math.atan2(dx, -dy) * 180) / Math.PI + (k % 2 ? 22 : -14) * s;
+      const largo = 26 + (k % 3) * 4 - t * 6;
+      const g = el('g', { transform: `translate(${x.toFixed(1)} ${y.toFixed(1)}) rotate(${phi.toFixed(1)})` }, corona);
+      espiga(g, largo, tonos[k % 2]);
+      // Hojitas y florecitas entre las espigas
+      if (k % 2 === 0) {
+        const xl = (RW - 2) * Math.sin(th + s * 0.09), yl = -(RW - 2) * Math.cos(th + s * 0.09);
+        el('ellipse', { cx: xl.toFixed(1), cy: yl.toFixed(1), rx: 3, ry: 8, fill: '#B9C7A2', transform: `rotate(${(phi + 40 * s).toFixed(1)} ${xl.toFixed(1)} ${yl.toFixed(1)})` }, corona);
+      } else {
+        florecita(corona, (RW + 1) * Math.sin(th - s * 0.07), -(RW + 1) * Math.cos(th - s * 0.07), 3.4);
+      }
+    }
   }
-  el('circle', { r: 154, fill: 'none', stroke: PLOMO, 'stroke-width': 3 }, vitral);
 
-  // Pétalos mayores (12) y menores intercalados
-  const PETALO = 'M0 -88 C22 -100 34 -126 0 -152 C-34 -126 -22 -100 0 -88 Z';
-  const PETALO_INT = 'M0 -98 C10 -106 16 -122 0 -138 C-16 -122 -10 -106 0 -98 Z';
-  const colores = ['url(#v-azul)', 'url(#v-rosa)', 'url(#v-azul)', 'url(#v-lila)'];
-  const petalos = el('g', {}, vitral);
+  // Racimo de uvas pequeño y lazo blanco abajo
+  const abajo = el('g', { transform: `translate(0 ${RW + 4})` }, svg);
+  const uvas = el('g', { fill: '#B5A2D6', stroke: '#8E78B8', 'stroke-width': 0.5 }, abajo);
+  [[-14, 6], [-8, 6], [-11, 11], [14, 6], [8, 6], [11, 11]].forEach(([x, y]) => el('circle', { cx: x, cy: y, r: 3.2 }, uvas));
+  el('path', { d: 'M0 0 C-10 -12 -30 -8 -26 2 C-22 10 -8 6 0 0 Z', fill: '#FFFFFF', stroke: '#E2D5BE', 'stroke-width': 1 }, abajo);
+  el('path', { d: 'M0 0 C10 -12 30 -8 26 2 C22 10 8 6 0 0 Z', fill: '#FFFFFF', stroke: '#E2D5BE', 'stroke-width': 1 }, abajo);
+  el('path', { d: 'M-2 2 L-12 26 L-6 23 L-3 28 Z M2 2 L12 26 L6 23 L3 28 Z', fill: '#FFFFFF', stroke: '#E2D5BE', 'stroke-width': 1 }, abajo);
+  el('circle', { r: 4.2, fill: '#FFFDF7', stroke: '#D9C6A1', 'stroke-width': 1 }, abajo);
+
+  // Hostia dorada con rayos arriba
+  const arriba = el('g', { transform: `translate(0 ${-(RW + 14)})` }, svg);
+  const rayos = el('g', { stroke: '#E2C27A', 'stroke-width': 1.2, 'stroke-linecap': 'round', class: 'hostia-rayos' }, arriba);
   for (let i = 0; i < 12; i++) {
-    const g = el('g', { transform: `rotate(${i * 30})` }, petalos);
-    el('path', { class: 'vidrio', d: PETALO, fill: colores[i % 4], stroke: PLOMO, 'stroke-width': 2.6, 'stroke-linejoin': 'round' }, g);
-    el('path', { d: PETALO_INT, fill: i % 2 ? 'url(#v-oro)' : 'url(#v-verde)', stroke: PLOMO, 'stroke-width': 1.6, opacity: 0.95 }, g);
-    // Gotas entre pétalos
-    const gg = el('g', { transform: 'rotate(15)' }, g);
-    el('circle', { class: 'vidrio', cx: 0, cy: -132, r: 9, fill: 'url(#v-oro)', stroke: PLOMO, 'stroke-width': 2 }, gg);
-    el('path', { d: 'M0 -100 L6 -116 L0 -120 L-6 -116 Z', fill: 'url(#v-rosa)', stroke: PLOMO, 'stroke-width': 1.4 }, gg);
+    const a = (i / 12) * Math.PI * 2;
+    el('path', { d: `M${(Math.cos(a) * 16).toFixed(1)} ${(Math.sin(a) * 16).toFixed(1)} L${(Math.cos(a) * (i % 2 ? 22 : 26)).toFixed(1)} ${(Math.sin(a) * (i % 2 ? 22 : 26)).toFixed(1)}` }, rayos);
   }
+  el('circle', { r: 13, fill: '#FFFDF6', stroke: 'url(#m-oro)', 'stroke-width': 2 }, arriba);
+  el('path', { d: 'M0 -7 V7 M-6 -1 H6', stroke: '#B88A3A', 'stroke-width': 1.8, 'stroke-linecap': 'round' }, arriba);
 
-  // Brillo que gira lento sobre el vidrio
-  const giro = el('g', { class: 'brillo-giro' }, vitral);
-  el('circle', { r: 200, fill: 'none' }, giro); // caja estable para el giro
-  el('ellipse', { cx: -70, cy: -90, rx: 120, ry: 70, fill: 'url(#v-brillo)' }, giro);
-
-  // Anillo dorado alrededor de la foto
-  el('circle', { r: R_FOTO + 8, fill: '#3C3228' }, svg);
-  el('circle', { r: R_FOTO + 6, fill: 'none', stroke: 'url(#v-oro)', 'stroke-width': 7 }, svg);
-  const cuentas = el('g', {}, svg);
-  for (let i = 0; i < 36; i++) {
-    const a = (i / 36) * Math.PI * 2;
-    el('circle', { cx: (Math.cos(a) * (R_FOTO + 6)).toFixed(2), cy: (Math.sin(a) * (R_FOTO + 6)).toFixed(2), r: 1.5, fill: '#FFF4D2' }, cuentas);
+  // Aro dorado con perlas alrededor de la foto
+  el('circle', { r: R_FOTO + 9, fill: 'none', stroke: 'url(#m-oro)', 'stroke-width': 7 }, svg);
+  el('circle', { r: R_FOTO + 14, fill: 'none', stroke: '#E8CD8E', 'stroke-width': 1 }, svg);
+  const perlas = el('g', { fill: '#FFFDF6', stroke: '#E2D3B4', 'stroke-width': 0.5 }, svg);
+  for (let i = 0; i < 40; i++) {
+    const a = (i / 40) * Math.PI * 2;
+    el('circle', { cx: (Math.cos(a) * (R_FOTO + 9)).toFixed(2), cy: (Math.sin(a) * (R_FOTO + 9)).toFixed(2), r: 1.7 }, perlas);
   }
 
   // Centro: foto o silueta
+  el('circle', { r: R_FOTO, fill: '#FFF9EE' }, svg);
   capaFoto = el('g', {}, svg);
-  el('circle', { r: R_FOTO, fill: '#FFF9EE', stroke: '#C9A35C', 'stroke-width': 1 }, svg);
-  svg.appendChild(capaFoto); // la foto queda encima del fondo
   mostrarSilueta();
 }
 
@@ -103,27 +134,17 @@ function mostrarSilueta() {
   capaFoto.replaceChildren();
   const g = el('g', { 'clip-path': 'url(#v-clip-foto)', class: 'foto-aparece' }, capaFoto);
   el('circle', { r: R_FOTO, fill: 'url(#v-fondo-foto)' }, g);
-  // Halo
-  el('circle', { cx: 0, cy: -16, r: 44, fill: '#FFF3D0', opacity: 0.7 }, g);
-  // Silueta de niña con velo y corona de flores
+  const s = el('g', { transform: `scale(${(R_FOTO / 80).toFixed(3)})` }, g);
+  el('circle', { cx: 0, cy: -16, r: 44, fill: '#FFF3D0', opacity: 0.7 }, s);
   const tono = '#D9BFA0';
-  el('path', { d: 'M-62 90 C-58 46 -34 30 0 28 C34 30 58 46 62 90 Z', fill: tono }, g);
-  el('path', { d: 'M-34 44 C-40 6 -30 -42 0 -44 C30 -42 40 6 34 44 C22 34 -22 34 -34 44 Z', fill: '#E9D7BD' }, g);
-  el('circle', { cx: 0, cy: -10, r: 21, fill: tono }, g);
-  el('rect', { x: -7, y: 8, width: 14, height: 18, rx: 6, fill: tono }, g);
-  const corona = el('g', { fill: '#F6D9E0', stroke: '#E2B3C1', 'stroke-width': 0.8 }, g);
+  el('path', { d: 'M-62 90 C-58 46 -34 30 0 28 C34 30 58 46 62 90 Z', fill: tono }, s);
+  el('path', { d: 'M-34 44 C-40 6 -30 -42 0 -44 C30 -42 40 6 34 44 C22 34 -22 34 -34 44 Z', fill: '#E9D7BD' }, s);
+  el('circle', { cx: 0, cy: -10, r: 21, fill: tono }, s);
+  el('rect', { x: -7, y: 8, width: 14, height: 18, rx: 6, fill: tono }, s);
+  const corona = el('g', { fill: '#F6D9E0', stroke: '#E2B3C1', 'stroke-width': 0.8 }, s);
   for (let i = -3; i <= 3; i++) {
     const a = (i / 3) * 1.05;
     el('circle', { cx: (Math.sin(a) * 22).toFixed(1), cy: (-14 - Math.cos(a) * 18).toFixed(1), r: 3.6 }, corona);
-  }
-  // Espigas a los lados
-  for (const s of [-1, 1]) {
-    const e = el('g', { transform: `translate(${s * 46} 74) rotate(${s * 18})`, fill: '#D9B46E' }, g);
-    el('path', { d: 'M0 0 V-34', stroke: '#C6A05F', 'stroke-width': 1.2 }, e);
-    for (let k = 0; k < 4; k++) {
-      el('ellipse', { cx: -2.4, cy: -22 - k * 5, rx: 1.8, ry: 4, transform: `rotate(-24 -2.4 ${-22 - k * 5})` }, e);
-      el('ellipse', { cx: 2.4, cy: -22 - k * 5, rx: 1.8, ry: 4, transform: `rotate(24 2.4 ${-22 - k * 5})` }, e);
-    }
   }
 }
 
@@ -143,7 +164,7 @@ export function ponerFoto(dataUrl) {
       href: candidata, x: -R_FOTO, y: -R_FOTO, width: R_FOTO * 2, height: R_FOTO * 2,
       preserveAspectRatio: 'xMidYMid slice',
     }, g);
-    el('circle', { r: R_FOTO, fill: 'none', stroke: 'rgba(255,255,255,.5)', 'stroke-width': 2 }, capaFoto);
+    el('circle', { r: R_FOTO, fill: 'none', stroke: 'rgba(255,255,255,.55)', 'stroke-width': 2 }, capaFoto);
   };
   img.onerror = () => { if (fotoActual === candidata) mostrarSilueta(); };
   img.src = candidata;

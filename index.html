@@ -335,7 +335,7 @@
           <span class="haz haz-1"></span><span class="haz haz-2"></span><span class="haz haz-3"></span>
         </div>
         <div class="roseton-marco" data-parallax="0.6">
-          <svg class="roseton" viewBox="-200 -200 400 400" role="img" aria-label="Vitral con la foto de Mariangel"></svg>
+          <svg class="roseton" viewBox="-200 -200 400 400" role="img" aria-label="Foto de Mariangel con una corona de trigo"></svg>
         </div>
       </div>
 
@@ -358,7 +358,41 @@
     <!-- 3. Cuenta regresiva -->
     <section id="cuenta" class="cuenta" aria-labelledby="cuenta-titulo">
       <div class="cuenta-ventana revelar">
-        <div class="cuenta-vitral" aria-hidden="true"></div>
+        <svg class="cuenta-hostia" viewBox="0 0 116 116" aria-hidden="true">
+          <defs><radialGradient id="cu-halo"><stop offset="0" stop-color="#FFF4D2"/><stop offset="1" stop-color="#FFF4D2" stop-opacity="0"/></radialGradient></defs>
+          <circle cx="58" cy="58" r="56" fill="url(#cu-halo)"/>
+          <g class="ch-rayos" stroke="#DDB866" stroke-width="1.6" stroke-linecap="round">
+            <path d="M58 8v14M58 94v14M8 58h14M94 58h14M22.6 22.6l9.9 9.9M83.5 83.5l9.9 9.9M22.6 93.4l9.9-9.9M83.5 32.5l9.9-9.9"/>
+            <path d="M39 12l4 12M77 104l-4-12M12 77l12-4M104 39l-12 4M77 12l-4 12M39 104l4-12M12 39l12 4M104 77l-12-4" opacity=".6"/>
+          </g>
+          <circle cx="58" cy="58" r="24" fill="#FFFDF6" stroke="#D2AA5C" stroke-width="2"/>
+          <circle cx="58" cy="58" r="19" fill="none" stroke="#EBD6A6" stroke-width="1"/>
+          <path d="M58 46v24M47 56h22" stroke="#B88A3A" stroke-width="2.6" stroke-linecap="round"/>
+        </svg>
+        <svg class="cuenta-espiga izq" viewBox="0 0 64 90" aria-hidden="true">
+          <g fill="#D9B46E" stroke="none">
+            <path d="M32 90 Q30 50 32 14" stroke="#C49C52" stroke-width="1.6" fill="none"/>
+            <path d="M32 70 Q14 64 8 48" stroke="#B9C7A2" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+            <ellipse cx="28.5" cy="20" rx="3" ry="6.5" transform="rotate(-24 28.5 20)"/><ellipse cx="35.5" cy="20" rx="3" ry="6.5" transform="rotate(24 35.5 20)"/>
+            <ellipse cx="28.5" cy="28" rx="3" ry="6.5" transform="rotate(-24 28.5 28)"/><ellipse cx="35.5" cy="28" rx="3" ry="6.5" transform="rotate(24 35.5 28)"/>
+            <ellipse cx="28.5" cy="36" rx="3" ry="6.5" transform="rotate(-24 28.5 36)"/><ellipse cx="35.5" cy="36" rx="3" ry="6.5" transform="rotate(24 35.5 36)"/>
+            <ellipse cx="28.5" cy="44" rx="2.8" ry="6" transform="rotate(-24 28.5 44)"/><ellipse cx="35.5" cy="44" rx="2.8" ry="6" transform="rotate(24 35.5 44)"/>
+            <ellipse cx="32" cy="11" rx="2.6" ry="6"/>
+            <g fill="#B5A2D6"><circle cx="46" cy="66" r="3.4"/><circle cx="52" cy="67" r="3.4"/><circle cx="49" cy="72" r="3.4"/><circle cx="55" cy="72" r="3.2"/><circle cx="52" cy="77" r="3.2"/></g>
+          </g>
+        </svg>
+        <svg class="cuenta-espiga der" viewBox="0 0 64 90" aria-hidden="true">
+          <g fill="#D9B46E" stroke="none">
+            <path d="M32 90 Q30 50 32 14" stroke="#C49C52" stroke-width="1.6" fill="none"/>
+            <path d="M32 70 Q14 64 8 48" stroke="#B9C7A2" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+            <ellipse cx="28.5" cy="20" rx="3" ry="6.5" transform="rotate(-24 28.5 20)"/><ellipse cx="35.5" cy="20" rx="3" ry="6.5" transform="rotate(24 35.5 20)"/>
+            <ellipse cx="28.5" cy="28" rx="3" ry="6.5" transform="rotate(-24 28.5 28)"/><ellipse cx="35.5" cy="28" rx="3" ry="6.5" transform="rotate(24 35.5 28)"/>
+            <ellipse cx="28.5" cy="36" rx="3" ry="6.5" transform="rotate(-24 28.5 36)"/><ellipse cx="35.5" cy="36" rx="3" ry="6.5" transform="rotate(24 35.5 36)"/>
+            <ellipse cx="28.5" cy="44" rx="2.8" ry="6" transform="rotate(-24 28.5 44)"/><ellipse cx="35.5" cy="44" rx="2.8" ry="6" transform="rotate(24 35.5 44)"/>
+            <ellipse cx="32" cy="11" rx="2.6" ry="6"/>
+            <g fill="#B5A2D6"><circle cx="46" cy="66" r="3.4"/><circle cx="52" cy="67" r="3.4"/><circle cx="49" cy="72" r="3.4"/><circle cx="55" cy="72" r="3.2"/><circle cx="52" cy="77" r="3.2"/></g>
+          </g>
+        </svg>
         <h2 id="cuenta-titulo" class="cuenta-eyebrow">Faltan</h2>
         <p class="cuenta-dias" aria-live="polite"><span class="cuenta-num" data-cuenta="dias">--</span><span class="cuenta-unidad" data-cuenta="unidad">días</span></p>
         <p class="cuenta-sub" data-cuenta="sub">para su Primera Comunión</p>
@@ -663,15 +697,6 @@
         <p>«<span data-t="fraseTexto"></span>»</p>
         <cite data-t="fraseCita">Juan 6:35</cite>
       </blockquote>
-
-      <div class="compartir revelar">
-        <button class="btn btn-oro btn-grande" type="button" data-compartir="nativo">Compartir invitación</button>
-        <div class="compartir-alt">
-          <button class="btn btn-linea" type="button" data-compartir="copiar">Copiar enlace</button>
-          <a class="btn btn-linea" data-compartir="whatsapp" href="#" target="_blank" rel="noopener">Enviar por WhatsApp</a>
-        </div>
-        <p class="compartir-estado" role="status" aria-live="polite"></p>
-      </div>
 
       <svg class="ornamento" aria-hidden="true"><use href="#orn-trigo"/></svg>
       <p class="pie-nota">Con amor, su familia</p>

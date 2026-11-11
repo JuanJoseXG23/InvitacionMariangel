@@ -324,47 +324,47 @@ main { position: relative; }
 .cuenta-ventana {
   position: relative; overflow: hidden; isolation: isolate;
   max-width: 420px; margin: 0 auto;
-  padding: 64px 22px 30px;
-  text-align: center; color: #FBF4E6;
-  border-radius: 210px 210px 26px 26px / 170px 170px 26px 26px;
+  padding: 112px 22px 34px;
+  text-align: center; color: var(--tinta);
+  border-radius: 210px 210px 28px 28px / 170px 170px 28px 28px;
   background:
-    radial-gradient(circle at 50% 0%, rgba(255, 220, 150, .35), rgba(255, 220, 150, 0) 55%),
-    linear-gradient(180deg, #24406A 0%, var(--azul-noche) 70%, #172A45 100%);
-  box-shadow: 0 0 0 1.5px rgba(232, 205, 142, .7), 0 0 0 7px var(--perla), 0 0 0 8.5px rgba(194, 154, 78, .5), 0 30px 50px -28px rgba(28, 51, 84, .7);
+    radial-gradient(circle at 50% 4%, rgba(255, 232, 178, .75), rgba(255, 232, 178, 0) 48%),
+    radial-gradient(rgba(194, 154, 78, .13) 1px, transparent 1.6px) 0 0 / 18px 18px,
+    linear-gradient(180deg, #FFFDF8 0%, #FBF3E4 62%, #F5E8D0 100%);
+  box-shadow:
+    inset 0 0 0 1.5px rgba(194, 154, 78, .75),
+    inset 0 0 0 8px #FFFDF8,
+    inset 0 0 0 9px rgba(194, 154, 78, .4),
+    0 26px 50px -30px rgba(120, 88, 40, .6);
 }
-.cuenta-vitral {
-  position: absolute; inset: 0; z-index: -1; opacity: .2;
-  background:
-    radial-gradient(circle at 12% 18%, var(--rosa) 0 7%, transparent 7.5%),
-    radial-gradient(circle at 88% 22%, var(--rosa) 0 6%, transparent 6.5%),
-    radial-gradient(circle at 20% 82%, #6E9BD0 0 9%, transparent 9.5%),
-    radial-gradient(circle at 84% 78%, #E9C877 0 8%, transparent 8.5%),
-    repeating-linear-gradient(60deg, rgba(255,255,255,.25) 0 1px, transparent 1px 34px),
-    repeating-linear-gradient(-60deg, rgba(255,255,255,.25) 0 1px, transparent 1px 34px);
-}
-.cuenta-eyebrow { margin: 0; font: 600 .78rem/1 var(--f-texto); letter-spacing: .32em; text-transform: uppercase; color: var(--oro-claro); }
+.cuenta-hostia { position: absolute; left: 50%; top: 16px; width: 88px; translate: -50% 0; z-index: -1; }
+.cuenta-hostia .ch-rayos { transform-box: fill-box; transform-origin: 50% 50%; animation: girar-simple 60s linear infinite; }
+.cuenta-espiga { position: absolute; bottom: 10px; width: 64px; z-index: -1; opacity: .9; }
+.cuenta-espiga.izq { left: 14px; rotate: 18deg; }
+.cuenta-espiga.der { right: 14px; rotate: -18deg; scale: -1 1; }
+.cuenta-eyebrow { margin: 0; font: 600 .78rem/1 var(--f-texto); letter-spacing: .32em; text-transform: uppercase; color: var(--oro-texto); }
 .cuenta-dias { margin: 6px 0 0; display: flex; align-items: baseline; justify-content: center; gap: 12px; }
 .cuenta-num {
   font: 500 clamp(5.6rem, 30vw, 8rem)/1 var(--f-titulo);
   font-variant-numeric: lining-nums tabular-nums;
-  background: linear-gradient(180deg, #FFF3CF 0%, #F0D08A 55%, #C9984A 100%);
+  background: linear-gradient(180deg, #6E4F1F 0%, #9C7433 55%, #C9A04F 100%);
   -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 0 22px rgba(255, 210, 130, .35));
 }
 .cuenta-num.cambia { animation: cambio-num .8s var(--ease-suave); }
 @keyframes cambio-num { from { opacity: 0; transform: translateY(10px) scale(.96); } }
-.cuenta-unidad { font: italic 500 2rem/1 var(--f-titulo); color: #F3E3BE; }
-.cuenta-sub { margin: 2px 0 0; font: 400 1.25rem/1.3 var(--f-titulo); color: #E6DCCB; }
+.cuenta-unidad { font: italic 500 2rem/1 var(--f-titulo); color: #6B5640; }
+.cuenta-sub { margin: 2px 0 0; font: 400 1.25rem/1.3 var(--f-titulo); color: #5C4A35; }
 .cuenta-reloj {
   display: flex; justify-content: center; align-items: center; gap: 10px;
   margin: 22px auto 0; padding: 12px 18px; width: fit-content;
-  border-radius: 14px; background: rgba(255,255,255,.07); border: 1px solid rgba(232, 205, 142, .28);
+  border-radius: 16px; background: rgba(255, 253, 248, .85); border: 1px solid rgba(194, 154, 78, .45);
+  box-shadow: 0 8px 18px -14px rgba(120, 88, 40, .6);
 }
 .cuenta-reloj span { display: flex; flex-direction: column; align-items: center; min-width: 44px; }
-.cuenta-reloj b { font: 500 1.7rem/1 var(--f-titulo); font-variant-numeric: tabular-nums; color: #FFF1CF; }
-.cuenta-reloj small { margin-top: 4px; font-size: .66rem; letter-spacing: .16em; text-transform: uppercase; color: #CFC3AE; }
-.cuenta-reloj i { font-style: normal; color: var(--oro-claro); opacity: .7; }
-.cuenta-meta { margin: 18px 0 0; font-size: .84rem; letter-spacing: .08em; color: #D8CDB9; }
+.cuenta-reloj b { font: 500 1.7rem/1 var(--f-titulo); font-variant-numeric: lining-nums tabular-nums; color: #4C3A28; }
+.cuenta-reloj small { margin-top: 4px; font-size: .66rem; letter-spacing: .16em; text-transform: uppercase; color: #7A6A58; }
+.cuenta-reloj i { font-style: normal; color: var(--oro); }
+.cuenta-meta { margin: 18px 0 0; font-size: .84rem; letter-spacing: .08em; color: #6B5A48; }
 .cuenta.terminada .cuenta-reloj, .cuenta.terminada .cuenta-eyebrow { display: none; }
 
 /* ═════════════ 4. DATOS ═════════════ */
@@ -863,8 +863,4 @@ main { position: relative; }
 }
 .cierre-fecha { margin: 10px 0 0; font: 600 .78rem/1.3 var(--f-texto); letter-spacing: .18em; text-transform: uppercase; color: #5C4A35; }
 .cierre-frase { margin-top: 24px; }
-.compartir { max-width: 420px; margin: 30px auto 0; }
-.compartir-alt { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
-.compartir-alt .btn { padding: 0 10px; font-size: .92rem; }
-.compartir-estado { min-height: 1.4em; margin: 10px 0 0; color: var(--oro-texto); font-weight: 600; font-size: .92rem; }
 .cierre .pie-nota { margin-top: 0; }
