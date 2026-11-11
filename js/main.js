@@ -1,15 +1,15 @@
-import { $, $$, fechaLarga, fechaCorta, horaBonita, enlaceMaps, capitalizar } from './util.js?v=20261111182028';
-import { escucharEvento, escucharColeccion, obtenerUid, DEMO_EXPLICITO, reiniciarDemo } from './data.js?v=20261111182028';
-import { construirSprite } from './avatares.js?v=20261111182028';
-import { iniciarBancas, actualizarBancas, setMiUid } from './bancas.js?v=20261111182028';
-import { iniciarRSVP, actualizarRSVP } from './rsvp.js?v=20261111182028';
-import { iniciarVelas, actualizarVelas, actualizarMensajes, setMiUidVelas, setNombreVela } from './velas.js?v=20261111182028';
-import { alCambiarSonido, setSilenciado, estaSilenciado } from './audio.js?v=20261111182028';
-import { iniciarPortada } from './portada.js?v=20261111182028';
-import { iniciarAltar, ponerFoto } from './altar.js?v=20261111182028';
-import { iniciarCuenta } from './cuenta.js?v=20261111182028';
-import { descargarICS } from './ics.js?v=20261111182028';
-import { iniciarFiesta } from './fiesta.js?v=20261111182028';
+import { $, $$, fechaLarga, fechaCorta, horaBonita, enlaceMaps, capitalizar } from './util.js?v=20261111182424';
+import { escucharEvento, escucharColeccion, obtenerUid, DEMO_EXPLICITO, reiniciarDemo } from './data.js?v=20261111182424';
+import { construirSprite } from './avatares.js?v=20261111182424';
+import { iniciarBancas, actualizarBancas, setMiUid } from './bancas.js?v=20261111182424';
+import { iniciarRSVP, actualizarRSVP } from './rsvp.js?v=20261111182424';
+import { iniciarVelas, actualizarVelas, actualizarMensajes, setMiUidVelas, setNombreVela } from './velas.js?v=20261111182424';
+import { alCambiarSonido, setSilenciado, estaSilenciado } from './audio.js?v=20261111182424';
+import { iniciarPortada } from './portada.js?v=20261111182424';
+import { iniciarAltar, ponerFoto } from './altar.js?v=20261111182424';
+import { iniciarCuenta } from './cuenta.js?v=20261111182424';
+import { descargarICS } from './ics.js?v=20261111182424';
+import { iniciarFiesta } from './fiesta.js?v=20261111182424';
 
 let evento = null;
 
@@ -61,8 +61,8 @@ function render(e) {
 
 /* ───────────── Confirmaciones y velas en vivo ───────────── */
 let uid = null;
-let confirmaciones = [];
-let velas = [];
+let confirmaciones = null; // null = aún no llega la primera lista real
+let velas = null;
 
 function alCambiarConfirmaciones(lista) {
   confirmaciones = lista;
@@ -85,8 +85,10 @@ function iniciarEnVivo() {
       uid = id;
       setMiUid(id);
       setMiUidVelas(id);
-      alCambiarConfirmaciones(confirmaciones);
-      actualizarVelas(velas);
+      // Solo se repinta si ya llegó la lista real: si se pintara vacía primero,
+      // al llegar los datos todos parecerían "recién confirmados".
+      if (confirmaciones) alCambiarConfirmaciones(confirmaciones);
+      if (velas) actualizarVelas(velas);
     })
     .catch((err) => console.warn('No se pudo iniciar sesión anónima:', err));
 }

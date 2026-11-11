@@ -1,4 +1,4 @@
-import { ZONA_HORARIA, OFFSET_COLOMBIA } from './defaults.js?v=20261111182028';
+import { ZONA_HORARIA, OFFSET_COLOMBIA } from './defaults.js?v=20261111182424';
 
 export const $ = (sel, raiz = document) => raiz.querySelector(sel);
 export const $$ = (sel, raiz = document) => [...raiz.querySelectorAll(sel)];

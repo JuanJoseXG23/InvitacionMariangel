@@ -1,10 +1,10 @@
-import { $, $$, fechaLarga, fechaCorta, horaBonita } from './util.js?v=20261111182028';
-import { EVENTO_DEFECTO } from './defaults.js?v=20261111182028';
+import { $, $$, fechaLarga, fechaCorta, horaBonita } from './util.js?v=20261111182424';
+import { EVENTO_DEFECTO } from './defaults.js?v=20261111182424';
 import {
   MODO_DEMO, escucharSesionAdmin, entrarAdmin, salirAdmin, leerEvento, guardarEvento,
   escucharColeccion, borrarDocumento, quitarMensaje,
-} from './data.js?v=20261111182028';
-import { construirSprite, svgPersonaje } from './avatares.js?v=20261111182028';
+} from './data.js?v=20261111182424';
+import { construirSprite, svgPersonaje } from './avatares.js?v=20261111182424';
 
 const A = (k) => $(`[data-adm="${k}"]`);
 

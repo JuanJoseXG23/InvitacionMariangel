@@ -1,5 +1,5 @@
-import { $, reduceMovimiento } from './util.js?v=20261111182028';
-import { svgPersonaje } from './avatares.js?v=20261111182028';
+import { $, reduceMovimiento } from './util.js?v=20261111182424';
+import { svgPersonaje } from './avatares.js?v=20261111182424';
 
 // La nave se ve desde la entrada: el altar al fondo (arriba) y las bancas
 // acercándose hacia quien mira (abajo, más grandes). Los primeros en confirmar
@@ -254,7 +254,9 @@ function globoAlAzar() {
 let colaAvisos = [];
 let mostrandoAviso = false;
 function avisar(texto) {
-  if (colaAvisos.length > 2) return; // sin saturar
+  // Nunca sobre la portada; y sin saturar.
+  if (document.body.classList.contains('portada-activa') || document.getElementById('portada')) return;
+  if (colaAvisos.length > 2) return;
   colaAvisos.push(texto);
   if (!mostrandoAviso) siguienteAviso();
 }
