@@ -1,0 +1,22 @@
+<!doctype html><html><head><meta charset="utf-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;1,500&family=Figtree:wght@600&display=block">
+<style>
+html,body{margin:0;width:1200px;height:630px;overflow:hidden}
+body{position:relative;background:radial-gradient(70% 120% at 28% 50%,#FFFDF6 0%,#F8EEDD 55%,#EFDFC4 100%);font-family:'Cormorant Garamond',serif}
+.rayos{position:absolute;left:330px;top:315px;width:1400px;height:1400px;translate:-50% -50%;background:repeating-conic-gradient(rgba(255,236,190,0) 0 9deg,rgba(255,226,170,.6) 12.5deg,rgba(255,236,190,0) 16deg 24deg);-webkit-mask-image:radial-gradient(circle,#000 10%,transparent 45%)}
+.halo{position:absolute;left:330px;top:315px;width:700px;height:700px;translate:-50% -50%;background:radial-gradient(circle,rgba(255,246,220,1) 0,rgba(255,240,205,0) 60%)}
+svg.r{position:absolute;left:110px;top:95px;width:440px;height:440px;filter:drop-shadow(0 20px 30px rgba(120,88,40,.3))}
+.t{position:absolute;left:600px;top:0;width:560px;height:630px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center}
+.e{font:600 22px Figtree,sans-serif;letter-spacing:.3em;text-transform:uppercase;color:#84601F}
+.n{font-weight:500;font-size:150px;line-height:1.12;margin:0 0 -6px;background:linear-gradient(180deg,#4C3A28 10%,#8F6A30 75%,#B98F45);-webkit-background-clip:text;color:transparent;padding:0 10px 18px}
+.f{font:italic 500 40px 'Cormorant Garamond';color:#5C4A35}
+.l{margin-top:16px;padding:12px 26px;border-top:1.5px solid rgba(194,154,78,.6);border-bottom:1.5px solid rgba(194,154,78,.6);font:600 22px Figtree;letter-spacing:.16em;text-transform:uppercase;color:#5C4A35}
+.c{margin-top:22px;font:italic 500 30px 'Cormorant Garamond';color:#6B5A44}
+.marco{position:absolute;inset:18px;border:1.5px solid rgba(194,154,78,.45);border-radius:6px;pointer-events:none}
+</style></head><body>
+<div class="rayos"></div><div class="halo"></div>
+<svg class="r" viewBox="-200 -200 400 400"></svg>
+<div class="t"><div class="e">Mi Primera Comunión</div><div class="n">Mariangel</div><div class="f">Gómez Roldán</div><div class="l">Sábado 19 de diciembre · 2026</div><div class="c">«Yo soy el pan de vida» · Juan 6:35</div></div>
+<div class="marco"></div>
+<script type="module">import {construirRoseton} from '../js/altar.js';construirRoseton(document.querySelector('svg.r'));</script>
+</body></html>
