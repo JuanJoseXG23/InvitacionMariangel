@@ -1,15 +1,16 @@
-import { $, $$, fechaLarga, fechaCorta, horaBonita, enlaceMaps, capitalizar } from './util.js?v=20261111182424';
-import { escucharEvento, escucharColeccion, obtenerUid, DEMO_EXPLICITO, reiniciarDemo } from './data.js?v=20261111182424';
-import { construirSprite } from './avatares.js?v=20261111182424';
-import { iniciarBancas, actualizarBancas, setMiUid } from './bancas.js?v=20261111182424';
-import { iniciarRSVP, actualizarRSVP } from './rsvp.js?v=20261111182424';
-import { iniciarVelas, actualizarVelas, actualizarMensajes, setMiUidVelas, setNombreVela } from './velas.js?v=20261111182424';
-import { alCambiarSonido, setSilenciado, estaSilenciado } from './audio.js?v=20261111182424';
-import { iniciarPortada } from './portada.js?v=20261111182424';
-import { iniciarAltar, ponerFoto } from './altar.js?v=20261111182424';
-import { iniciarCuenta } from './cuenta.js?v=20261111182424';
-import { descargarICS } from './ics.js?v=20261111182424';
-import { iniciarFiesta } from './fiesta.js?v=20261111182424';
+import { $, $$, fechaLarga, fechaCorta, horaBonita, enlaceMaps, capitalizar } from './util.js?v=20261111184438';
+import { escucharEvento, escucharColeccion, obtenerUid, DEMO_EXPLICITO, reiniciarDemo } from './data.js?v=20261111184438';
+import { construirSprite } from './avatares.js?v=20261111184438';
+import { iniciarBancas, actualizarBancas, setMiUid } from './bancas.js?v=20261111184438';
+import { iniciarRSVP, actualizarRSVP } from './rsvp.js?v=20261111184438';
+import { iniciarVelas, actualizarVelas, actualizarMensajes, setMiUidVelas, setNombreVela } from './velas.js?v=20261111184438';
+import { alCambiarSonido, setSilenciado, estaSilenciado } from './audio.js?v=20261111184438';
+import { iniciarPortada } from './portada.js?v=20261111184438';
+import { iniciarAltar, ponerFoto } from './altar.js?v=20261111184438';
+import { iniciarCuenta } from './cuenta.js?v=20261111184438';
+import { descargarICS } from './ics.js?v=20261111184438';
+import { iniciarFiesta } from './fiesta.js?v=20261111184438';
+import { iniciarMarca } from './marca.js?v=20261111184438';
 
 let evento = null;
 
@@ -146,6 +147,7 @@ function iniciarRevelado() {
 /* ───────────── Arranque ───────────── */
 // Solo si todo el JS cargó bien se ocultan los bloques para animarlos al aparecer.
 document.documentElement.classList.add('js-listo');
+iniciarMarca();
 if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
 window.scrollTo(0, 0);
 

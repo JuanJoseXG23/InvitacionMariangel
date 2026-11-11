@@ -1,4 +1,4 @@
-import { $, fechaColombia } from './util.js?v=20261111182424';
+import { $, fechaColombia } from './util.js?v=20261111184438';
 
 let objetivo = null;
 let timer = 0;
