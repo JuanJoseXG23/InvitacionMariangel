@@ -1,4 +1,4 @@
-import { fechaColombia } from './util.js?v=20261111184438';
+import { fechaColombia } from './util.js?v=20261111184712';
 
 const fmt = (d) => d.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
 const esc = (s = '') => String(s).replace(/\\/g, '\\\\').replace(/\n/g, '\\n').replace(/([,;])/g, '\\$1');
