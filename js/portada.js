@@ -84,30 +84,46 @@ function construirTrigal(svg) {
   svg.appendChild(frag);
 }
 
-/** Pide permiso al giroscopio en iOS (debe ocurrir dentro del toque). */
-function pedirGiroscopio() {
-  const DOE = window.DeviceOrientationEvent;
-  if (DOE && typeof DOE.requestPermission === 'function') {
-    return DOE.requestPermission().then((r) => r === 'granted').catch(() => false);
-  }
-  return Promise.resolve(!!DOE);
+/**
+ * Campanas: vaivén con <animateTransform> (SMIL) y pivote explícito.
+ * Safari/iOS calcula mal el punto de giro de las transformaciones CSS en SVG
+ * (con <use> y transform-box), y las campanas "salían volando".
+ */
+function prepararCampanas(svg) {
+  const NS = 'http://www.w3.org/2000/svg';
+  return [...svg.querySelectorAll('.campana')].map((g, i) => {
+    const u = g.querySelector('use');
+    const cx = +u.getAttribute('x') + +u.getAttribute('width') / 2;
+    const cy = +u.getAttribute('y');
+    const a = document.createElementNS(NS, 'animateTransform');
+    a.setAttribute('attributeName', 'transform');
+    a.setAttribute('type', 'rotate');
+    a.setAttribute('values', `0 ${cx} ${cy}; 8 ${cx} ${cy}; 0 ${cx} ${cy}; -8 ${cx} ${cy}; 0 ${cx} ${cy}`);
+    a.setAttribute('dur', '1.1s');
+    a.setAttribute('repeatCount', '4');
+    a.setAttribute('begin', 'indefinite');
+    a.setAttribute('fill', 'remove');
+    g.appendChild(a);
+    return { a, retraso: (i % 2) * 280 };
+  });
 }
 
 export function iniciarPortada({ alEntrar }) {
   const portada = $('#portada');
   const main = $('#contenido');
   construirTrigal($('.trigal', portada));
+  const campanas = prepararCampanas($('.fachada-svg', portada));
 
   const saltar = new URLSearchParams(location.search).get('saltar') === '1';
-  const terminar = (permisoGiro) => {
+  const terminar = () => {
     portada.remove();
     document.body.classList.remove('portada-activa');
     main.inert = false;
     main.removeAttribute('inert');
-    alEntrar?.({ permisoGiro });
+    alEntrar?.();
   };
 
-  if (saltar) { terminar(false); return; }
+  if (saltar) { terminar(); return; }
   // Vista de depuración: ?vista=puertas deja las puertas abiertas y quietas.
   if (new URLSearchParams(location.search).get('vista') === 'puertas') {
     document.head.insertAdjacentHTML('beforeend', '<style>.portada.abierta .puerta-izq{transform:rotateY(78deg)!important}.portada.abierta .puerta-der{transform:rotateY(-78deg)!important}</style>');
@@ -119,17 +135,17 @@ export function iniciarPortada({ alEntrar }) {
   btn.addEventListener('click', () => {
     btn.disabled = true;
     desbloquearAudio();
-    const giro = pedirGiroscopio();
     repique();
     document.dispatchEvent(new CustomEvent('campanas'));
 
     if (reduceMovimiento()) {
       portada.classList.add('abierta', 'saliendo');
-      setTimeout(() => giro.then(terminar), 450);
+      setTimeout(terminar, 450);
       return;
     }
 
     portada.classList.add('tanendo');
+    campanas.forEach(({ a, retraso }) => setTimeout(() => { try { a.beginElement(); } catch { /* sin SMIL */ } }, retraso));
     requestAnimationFrame(() => {
       portada.classList.add('abierta');
       setTimeout(() => portada.classList.add('entrando'), 250);
@@ -140,7 +156,7 @@ export function iniciarPortada({ alEntrar }) {
         main.removeAttribute('inert');
         portada.classList.add('saliendo');
       }, 2600);
-      setTimeout(() => giro.then(terminar), 3700);
+      setTimeout(terminar, 3700);
     });
   }, { once: true });
 }

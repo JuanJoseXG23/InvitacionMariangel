@@ -228,11 +228,11 @@ export function iniciarParticulas(canvas, seccion) {
   new ResizeObserver(medir).observe(seccion);
 }
 
-/* ───────────── Parallax: giroscopio con respaldo táctil/ratón ───────────── */
+/* ───────────── Parallax: táctil / ratón ───────────── */
 export function iniciarParallax(seccion) {
   if (reduceMovimiento()) return;
   const capas = $$('[data-parallax]', seccion).map((n) => ({ n, k: parseFloat(n.dataset.parallax) || 0 }));
-  let tx = 0, ty = 0, x = 0, y = 0, raf = 0, visible = true, usandoGiro = false;
+  let tx = 0, ty = 0, x = 0, y = 0, raf = 0, visible = true;
   const clamp = (v) => Math.max(-1, Math.min(1, v));
 
   const animar = () => {
@@ -243,25 +243,14 @@ export function iniciarParallax(seccion) {
   };
   const pedir = () => { if (!raf && visible) raf = requestAnimationFrame(animar); };
 
-  let base = null;
-  window.addEventListener('deviceorientation', (e) => {
-    if (e.gamma == null) return;
-    usandoGiro = true;
-    if (base == null) base = e.beta;
-    tx = clamp(e.gamma / 22);
-    ty = clamp((e.beta - base) / 22);
-    pedir();
-  }, { passive: true });
-
-  // Respaldo: dedo o ratón sobre la sección
+  // Parallax con el dedo o el ratón sobre la sección (sin pedir permisos de movimiento).
   seccion.addEventListener('pointermove', (e) => {
-    if (usandoGiro) return;
     const r = seccion.getBoundingClientRect();
     tx = clamp(((e.clientX - r.left) / r.width - 0.5) * 2);
     ty = clamp(((e.clientY - r.top) / r.height - 0.3) * 2);
     pedir();
   }, { passive: true });
-  seccion.addEventListener('pointerleave', () => { if (!usandoGiro) { tx = 0; ty = 0; pedir(); } });
+  seccion.addEventListener('pointerleave', () => { tx = 0; ty = 0; pedir(); });
 
   new IntersectionObserver(([e]) => { visible = e.isIntersecting; if (visible) pedir(); }).observe(seccion);
 }
