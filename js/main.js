@@ -9,6 +9,8 @@ import { iniciarPortada } from './portada.js';
 import { iniciarAltar, ponerFoto } from './altar.js';
 import { iniciarCuenta } from './cuenta.js';
 import { descargarICS } from './ics.js';
+import { iniciarFiesta } from './fiesta.js';
+import { iniciarCompartir, actualizarCompartir } from './compartir.js';
 
 let evento = null;
 
@@ -46,9 +48,11 @@ function render(e) {
   });
 
   // Fiesta: oculta, por definir, o definida
-  const fiesta = $('[data-fiesta]');
-  fiesta.hidden = !e.fiestaMostrar;
-  fiesta.dataset.estado = e.fiestaLugar || e.fiestaHora ? 'definida' : 'pendiente';
+  $$('[data-fiesta]').forEach((fiesta) => {
+    fiesta.hidden = !e.fiestaMostrar;
+    fiesta.dataset.estado = e.fiestaLugar || e.fiestaHora ? 'definida' : 'pendiente';
+  });
+  actualizarCompartir(e);
 
   document.title = `Primera Comunión de ${e.nombre}`;
   $('.roseton')?.setAttribute('aria-label', `Vitral con la foto de ${e.nombre}`);
@@ -151,6 +155,8 @@ if (DEMO_EXPLICITO) {
 iniciarBotonSonido();
 iniciarAltar();
 iniciarEnVivo();
+iniciarFiesta();
+iniciarCompartir();
 escucharEvento(render);
 
 $$('[data-ics]').forEach((b) => b.addEventListener('click', () => alAgregarCalendario(b.dataset.ics)));

@@ -105,7 +105,7 @@ function prepararDemo() {
     addEventListener('storage', (e) => {
       for (const col of Object.keys(oyentesDemo)) if (e.key === claveDemo(col)) emitirDemo(col);
     });
-    if (!DEMO_EXPLICITO) return;
+    if (!DEMO_EXPLICITO || /admin.html$/.test(location.pathname)) return;
     const demo = await import('./demo.js');
     if (localStorage.getItem(claveDemo('confirmaciones')) === null) {
       const { confirmaciones, velas } = demo.sembrar();
@@ -205,3 +205,57 @@ export async function encenderVela(nombre) {
 
 /** Para el panel admin (demo): borrar cualquier documento. */
 export function borrarDemo(col, id) { escribirDemo(col, id, null); }
+
+/* ═════════════ Panel admin ═════════════ */
+
+/** Escucha la sesión. cb(usuario | null). En demo entrega un admin ficticio. */
+export function escucharSesionAdmin(cb) {
+  if (MODO_DEMO) { cb({ uid: 'admin-demo', email: 'demo@ejemplo.com', demo: true }); return () => {}; }
+  let cancelar = () => {};
+  firebase().then(({ auth, au }) => {
+    cancelar = au.onAuthStateChanged(auth, (u) => cb(u && !u.isAnonymous ? u : null));
+  }).catch((err) => { console.warn(err); cb(null); });
+  return () => cancelar();
+}
+
+export async function entrarAdmin(email, clave) {
+  const { auth, au } = await firebase();
+  await au.setPersistence(auth, au.browserLocalPersistence).catch(() => {});
+  return au.signInWithEmailAndPassword(auth, email, clave);
+}
+
+export async function salirAdmin() {
+  if (MODO_DEMO) return;
+  const { auth, au } = await firebase();
+  await au.signOut(auth);
+}
+
+/** Lee config/evento una vez (para saber si existe). */
+export async function leerEvento() {
+  if (MODO_DEMO) return { existe: !!leerJSON(CLAVE_DEMO_EVENTO), datos: mezclar(leerJSON(CLAVE_DEMO_EVENTO)) };
+  const { db, fs } = await firebase();
+  const snap = await fs.getDoc(fs.doc(db, 'config', 'evento'));
+  return { existe: snap.exists(), datos: mezclar(snap.data()) };
+}
+
+export async function guardarEvento(datos) {
+  if (MODO_DEMO) { guardarEventoDemo({ ...(leerJSON(CLAVE_DEMO_EVENTO) || {}), ...datos }); return; }
+  const { db, fs } = await firebase();
+  await fs.setDoc(fs.doc(db, 'config', 'evento'), datos, { merge: true });
+}
+
+export async function borrarDocumento(col, id) {
+  if (MODO_DEMO) { escribirDemo(col, id, null); return; }
+  const { db, fs } = await firebase();
+  await fs.deleteDoc(fs.doc(db, col, id));
+}
+
+export async function quitarMensaje(id) {
+  if (MODO_DEMO) {
+    const d = leerDemo('confirmaciones')[id];
+    if (d) escribirDemo('confirmaciones', id, { ...d, mensaje: '' });
+    return;
+  }
+  const { db, fs } = await firebase();
+  await fs.updateDoc(fs.doc(db, 'confirmaciones', id), { mensaje: '' });
+}

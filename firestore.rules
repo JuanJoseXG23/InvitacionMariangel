@@ -1,0 +1,92 @@
+rules_version = '2';
+
+// Reglas de la invitación de Primera Comunión de Mariangel.
+// ⚠️ Reemplaza UID_DEL_ADMIN por el UID real del usuario administrador
+//    (Firebase Console → Authentication → Users → columna "User UID").
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── Administrador: un único usuario con correo y contraseña ──
+    function isAdmin() {
+      return request.auth != null
+        && request.auth.token.firebase.sign_in_provider == 'password'
+        && request.auth.uid == 'UID_DEL_ADMIN';
+    }
+
+    function registroAbierto() {
+      return get(/databases/$(database)/documents/config/evento).data.registroAbierto == true;
+    }
+
+    function textoMax(v, max) {
+      return v is string && v.size() <= max;
+    }
+
+    // Acompañantes: lista de hasta 10 textos de máximo 60 caracteres.
+    function acompananteOk(a, i) {
+      return a.size() <= i || textoMax(a[i], 60);
+    }
+    function acompanantesOk(a) {
+      return a is list && a.size() <= 10
+        && acompananteOk(a, 0) && acompananteOk(a, 1) && acompananteOk(a, 2) && acompananteOk(a, 3) && acompananteOk(a, 4)
+        && acompananteOk(a, 5) && acompananteOk(a, 6) && acompananteOk(a, 7) && acompananteOk(a, 8) && acompananteOk(a, 9);
+    }
+
+    function confirmacionOk(d) {
+      let campos = ['nombre', 'acompanantes', 'personas', 'mensaje', 'avatar', 'creadoEn', 'actualizadoEn'];
+      return d.keys().hasOnly(campos) && d.keys().hasAll(campos)
+        && d.nombre is string && d.nombre.size() >= 2 && d.nombre.size() <= 60
+        && d.personas is int && d.personas >= 1 && d.personas <= 10
+        && acompanantesOk(d.acompanantes) && d.acompanantes.size() <= d.personas - 1
+        && textoMax(d.mensaje, 280)
+        && d.avatar in ['nina', 'nino', 'senora', 'senor', 'abuela', 'abuelo', 'joven', 'angelito']
+        && d.actualizadoEn == request.time;
+    }
+
+    // ── Datos del evento ──
+    match /config/evento {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // ── Confirmaciones: id del documento = uid anónimo del dispositivo ──
+    match /confirmaciones/{uid} {
+      allow read: if true;
+
+      allow create: if request.auth != null && request.auth.uid == uid
+        && registroAbierto()
+        && confirmacionOk(request.resource.data)
+        && request.resource.data.creadoEn == request.time;
+
+      allow update: if (
+          request.auth != null && request.auth.uid == uid
+          && registroAbierto()
+          && confirmacionOk(request.resource.data)
+          && request.resource.data.creadoEn == resource.data.creadoEn
+        ) || (
+          // El admin solo puede borrar/editar el mensaje.
+          isAdmin()
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['mensaje'])
+          && textoMax(request.resource.data.mensaje, 280)
+        );
+
+      allow delete: if (request.auth != null && request.auth.uid == uid) || isAdmin();
+    }
+
+    // ── Velas: una por dispositivo ──
+    match /velas/{uid} {
+      allow read: if true;
+      allow create: if request.auth != null && request.auth.uid == uid
+        && request.resource.data.keys().hasOnly(['nombre', 'creadoEn'])
+        && request.resource.data.keys().hasAll(['nombre', 'creadoEn'])
+        && textoMax(request.resource.data.nombre, 60)
+        && request.resource.data.creadoEn == request.time;
+      allow delete: if isAdmin();
+    }
+
+    // Todo lo demás, cerrado.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

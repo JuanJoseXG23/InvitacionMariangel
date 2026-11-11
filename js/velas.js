@@ -1,4 +1,4 @@
-import { $, nombrePublico, reduceMovimiento } from './util.js';
+import { $, reduceMovimiento } from './util.js';
 import { encenderVela } from './data.js';
 import { campanitas } from './audio.js';
 
@@ -62,7 +62,7 @@ export function actualizarVelas(lista) {
   q('mas').hidden = resto <= 0;
   q('mas').textContent = `y ${resto} ${resto === 1 ? 'vela más' : 'velas más'} iluminando su camino`;
 
-  for (const v of lista) if (nuevas.has(v.id) && v.nombre && v.id !== miUid) ultimaVelaConNombre.push(`${v.nombre.split(' ')[0]} encendió una vela`);
+  for (const v of lista) if (nuevas.has(v.id) && v.nombre && v.id !== miUid) ultimaVelaConNombre.push(`${v.nombre} encendió una vela`);
   velasPrevias = new Set(lista.map((v) => v.id));
   primeraCarga = false;
 }
@@ -77,7 +77,7 @@ function pintarPropia(encendida) {
 /** Mensajes de las confirmaciones: lista ordenada + luces flotantes. */
 export function actualizarMensajes(confirmaciones) {
   const conMensaje = confirmaciones.filter((c) => c.mensaje).sort((a, b) => b.creadoEn - a.creadoEn);
-  mensajes = conMensaje.map((c) => ({ texto: c.mensaje, autor: nombrePublico(c.nombre) }));
+  mensajes = conMensaje.map((c) => ({ texto: c.mensaje, autor: String(c.nombre || '').replace(/\s+/g, ' ').trim() }));
   q('nmensajes').textContent = String(mensajes.length);
   const ol = q('lista');
   const frag = document.createDocumentFragment();

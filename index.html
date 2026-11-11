@@ -434,7 +434,14 @@
       </header>
 
       <div class="iglesia-interior">
-        <div class="altar-mayor" aria-hidden="true">
+        <p class="contador revelar" aria-live="polite">
+          <span class="contador-num" data-bancas="total">0</span>
+          <span class="contador-txt" data-bancas="texto">personas ya confirmaron</span>
+        </p>
+        <p class="contador-sub" data-bancas="familias"></p>
+
+        <div class="templo">
+          <div class="altar-mayor" aria-hidden="true">
           <svg viewBox="0 0 360 170" preserveAspectRatio="xMidYMax meet">
             <defs>
               <radialGradient id="am-luz" cx=".5" cy=".4" r=".6"><stop offset="0" stop-color="#FFF6DC"/><stop offset="1" stop-color="#FFF6DC" stop-opacity="0"/></radialGradient>
@@ -451,18 +458,12 @@
             <g class="am-vela"><rect x="227" y="104" width="7" height="24" rx="1.5" fill="#FFFDF8" stroke="#D9C6A1"/><path class="am-llama" d="M230.5 92 C234 98 234 102 230.5 104 C227 102 227 98 230.5 92 Z" fill="#F6C55A"/></g>
             <g fill="#F4C9D5"><circle cx="146" cy="124" r="5"/><circle cx="152" cy="120" r="4"/><circle cx="140" cy="121" r="4"/><circle cx="214" cy="124" r="5"/><circle cx="208" cy="120" r="4"/><circle cx="220" cy="121" r="4"/></g>
             <g fill="#FFFFFF"><circle cx="146" cy="119" r="2.6"/><circle cx="214" cy="119" r="2.6"/></g>
-            <path d="M40 160 H320" stroke="#DCCBAB" stroke-width="2"/>
-            <rect x="60" y="150" width="240" height="10" fill="#EFE4D1"/>
           </svg>
         </div>
 
-        <p class="contador revelar" aria-live="polite">
-          <span class="contador-num" data-bancas="total">0</span>
-          <span class="contador-txt" data-bancas="texto">personas ya confirmaron</span>
-        </p>
-        <p class="contador-sub" data-bancas="familias"></p>
-
-        <div class="nave" role="group" aria-label="Bancas de la iglesia con los invitados que confirmaron"></div>
+          <div class="nave" role="group" aria-label="Bancas de la iglesia con los invitados que confirmaron"></div>
+          <div class="globos" aria-hidden="true"></div>
+        </div>
         <p class="nave-pie"><a class="btn btn-oro" href="#confirmar">Quiero mi lugar en la banca</a></p>
       </div>
     </section>
@@ -593,11 +594,88 @@
       </details>
     </section>
 
-    <footer class="pie">
+    <!-- 8. De la misa a la fiesta -->
+    <section id="fiesta" class="fiesta" aria-labelledby="fiesta-sec-titulo" data-fiesta data-seccion-fiesta>
+      <div class="fiesta-cielo" aria-hidden="true">
+        <span class="fiesta-haz fh-1"></span><span class="fiesta-haz fh-2"></span><span class="fiesta-haz fh-3"></span>
+      </div>
+      <svg class="guirnalda" data-guirnalda viewBox="0 0 400 120" preserveAspectRatio="none" aria-hidden="true"></svg>
+      <div class="confeti-suave" data-confeti-suave aria-hidden="true"></div>
+
+      <div class="fiesta-contenido">
+        <header class="seccion-cabeza revelar">
+          <p class="eyebrow">De la misa a la fiesta</p>
+          <h2 id="fiesta-sec-titulo" class="seccion-titulo" data-t="fiestaTitulo">Después de la misa, compartimos</h2>
+          <svg class="ornamento" aria-hidden="true"><use href="#orn-trigo"/></svg>
+        </header>
+
+        <div class="fiesta-tarjeta revelar">
+          <div class="fiesta-icono" aria-hidden="true"><svg><use href="#i-fiesta"/></svg></div>
+          <div data-fiesta-definida>
+            <p class="fiesta-hora"><svg aria-hidden="true"><use href="#i-reloj"/></svg><span data-t="fiestaHoraBonita"></span></p>
+            <p class="tarjeta-lugar" data-t="fiestaLugar"></p>
+            <p class="tarjeta-direccion" data-t="fiestaDireccion"></p>
+            <p class="tarjeta-desc" data-t="fiestaDescripcion"></p>
+            <div class="tarjeta-acciones">
+              <a class="btn btn-oro" data-enlace="fiestaMaps" href="#" target="_blank" rel="noopener">
+                <svg aria-hidden="true"><use href="#i-mapa"/></svg>Cómo llegar
+              </a>
+              <button class="btn btn-linea" type="button" data-ics="fiesta">
+                <svg aria-hidden="true"><use href="#i-calendario"/></svg>Agregar al calendario
+              </button>
+            </div>
+          </div>
+          <div class="fiesta-pendiente" data-fiesta-pendiente>
+            <p class="tarjeta-desc" data-t="fiestaDescripcion"></p>
+            <div class="sobre" aria-hidden="true">
+              <svg viewBox="0 0 120 84">
+                <rect x="4" y="10" width="112" height="70" rx="6" fill="#FFF8EA" stroke="#D9B26F" stroke-width="2"/>
+                <path d="M4 16 L60 52 L116 16" fill="none" stroke="#D9B26F" stroke-width="2"/>
+                <circle cx="60" cy="50" r="10" fill="#D88AA1"/>
+                <path d="M60 45.5 c-2-3-7-1.5-5.5 2.2 1 2.4 5.5 5.3 5.5 5.3 s4.5-2.9 5.5-5.3c1.5-3.7-3.5-5.2-5.5-2.2z" fill="#FFF"/>
+              </svg>
+            </div>
+            <p class="pendiente-sello"><span class="pendiente-punto" aria-hidden="true"></span><span data-t="fiestaPendienteTexto"></span></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 9. Cierre -->
+    <section id="cierre" class="cierre" aria-labelledby="cierre-titulo">
+      <div class="cierre-luz" aria-hidden="true"></div>
+      <svg class="cierre-hostia revelar" viewBox="0 0 140 140" aria-hidden="true">
+        <defs>
+          <radialGradient id="ch-luz"><stop offset="0" stop-color="#FFF6DA"/><stop offset="1" stop-color="#FFF6DA" stop-opacity="0"/></radialGradient>
+        </defs>
+        <circle cx="70" cy="70" r="68" fill="url(#ch-luz)"/>
+        <g class="cierre-rayos" stroke="#E2C27A" stroke-width="1.4" stroke-linecap="round" opacity=".8">
+          <path d="M70 6v14M70 120v14M6 70h14M120 70h14M24.7 24.7l9.9 9.9M105.4 105.4l9.9 9.9M24.7 115.3l9.9-9.9M105.4 34.6l9.9-9.9"/>
+        </g>
+        <circle cx="70" cy="70" r="34" fill="#FFFDF6" stroke="#D9B26F" stroke-width="2"/>
+        <circle cx="70" cy="70" r="28" fill="none" stroke="#EBD6A6" stroke-width="1"/>
+        <path d="M70 52v36M54 66h32" stroke="#C59A45" stroke-width="3" stroke-linecap="round"/>
+      </svg>
+      <h2 id="cierre-titulo" class="cierre-titulo revelar" data-t="mensajeCierre">Gracias por acompañarnos</h2>
+      <p class="cierre-nombre revelar"><span data-t="nombre">Mariangel</span></p>
+      <p class="cierre-fecha" data-t="fechaLarga"></p>
+      <blockquote class="frase cierre-frase revelar">
+        <p>«<span data-t="fraseTexto"></span>»</p>
+        <cite data-t="fraseCita">Juan 6:35</cite>
+      </blockquote>
+
+      <div class="compartir revelar">
+        <button class="btn btn-oro btn-grande" type="button" data-compartir="nativo">Compartir invitación</button>
+        <div class="compartir-alt">
+          <button class="btn btn-linea" type="button" data-compartir="copiar">Copiar enlace</button>
+          <a class="btn btn-linea" data-compartir="whatsapp" href="#" target="_blank" rel="noopener">Enviar por WhatsApp</a>
+        </div>
+        <p class="compartir-estado" role="status" aria-live="polite"></p>
+      </div>
+
       <svg class="ornamento" aria-hidden="true"><use href="#orn-trigo"/></svg>
-      <p class="pie-nombre" data-t="nombre">Mariangel</p>
       <p class="pie-nota">Con amor, su familia</p>
-    </footer>
+    </section>
   </main>
 
 

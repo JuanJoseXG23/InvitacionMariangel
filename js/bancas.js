@@ -1,11 +1,17 @@
-import { $, nombrePublico, reduceMovimiento } from './util.js';
-import { svgPersonaje, AVATARES } from './avatares.js';
+import { $, reduceMovimiento } from './util.js';
+import { svgPersonaje } from './avatares.js';
+
+// La nave se ve desde la entrada: el altar al fondo (arriba) y las bancas
+// acercándose hacia quien mira (abajo, más grandes). Los primeros en confirmar
+// se sientan adelante, cerca del altar.
 
 const FILAS_MIN = 6;
-const LOTE = 60; // personajes creados por cuadro (render en lotes)
+const LOTE = 60;          // personajes creados por cuadro (render en lotes)
+const ESCALA_MIN = 0.6;   // tamaño relativo de la fila más lejana
+const PASO_ESCALA = 0.06; // cuánto se achica cada fila hacia el altar
 
-let nave, contador, contadorFamilias, ficha;
-let porLado = 4;
+let templo, nave, globos, contador, contadorFamilias, ficha;
+let porLado = 3;
 let filas = []; // [{ el, asientos: [HTMLElement en orden de llenado] }]
 const personajes = new Map(); // id -> { el, firma }
 let primeraCarga = true;
@@ -13,8 +19,10 @@ let miUid = null;
 let pendienteIrAMio = false;
 let ultimaLista = [];
 let trabajo = 0;
+let visible = false;
 
 const calcularPorLado = () => (innerWidth >= 1000 ? 6 : innerWidth >= 640 ? 5 : innerWidth >= 480 ? 4 : 3);
+export const nombreVisible = (n = '') => String(n).replace(/\s+/g, ' ').trim() || 'Invitado';
 
 /** Orden de llenado de una fila: desde el pasillo hacia afuera, alternando lados. */
 function ordenFila(n) {
@@ -47,9 +55,21 @@ function crearFila() {
   return { el, asientos };
 }
 
+/** Perspectiva: la última fila (junto a la entrada) mide 1; las de adelante se achican. */
+function aplicarPerspectiva() {
+  const R = filas.length;
+  filas.forEach((f, r) => {
+    const s = Math.max(ESCALA_MIN, 1 - (R - 1 - r) * PASO_ESCALA);
+    f.el.style.setProperty('--s', s.toFixed(3));
+  });
+  const smin = Math.max(ESCALA_MIN, 1 - (R - 1) * PASO_ESCALA);
+  templo.style.setProperty('--smin', smin.toFixed(3));
+}
+
 function asegurarFilas(personas) {
   const porFila = porLado * 2;
   const necesarias = Math.max(FILAS_MIN, Math.ceil(personas / porFila) + 1);
+  const antes = filas.length;
   while (filas.length < necesarias) filas.push(crearFila());
   while (filas.length > necesarias) {
     const f = filas[filas.length - 1];
@@ -57,13 +77,14 @@ function asegurarFilas(personas) {
     f.el.remove();
     filas.pop();
   }
+  if (filas.length !== antes) aplicarPerspectiva();
 }
 
 const asientoN = (i) => filas[Math.floor(i / (porLado * 2))].asientos[i % (porLado * 2)];
 
 function etiqueta(c) {
   const extra = (c.personas || 1) - 1;
-  let t = nombrePublico(c.nombre);
+  let t = nombreVisible(c.nombre);
   if (extra > 0) t += ` y ${extra} ${extra === 1 ? 'acompañante' : 'acompañantes'}`;
   return c.mensaje ? `${t}. Toca para leer su mensaje` : t;
 }
@@ -73,6 +94,10 @@ function crearPersonaje(c) {
   b.type = 'button';
   b.className = 'personaje';
   b.dataset.id = c.id;
+  // Ritmo propio para que cada uno "respire" distinto.
+  b.style.setProperty('--r', `${(2.6 + Math.random() * 2.2).toFixed(2)}s`);
+  b.style.setProperty('--rd', `${(-Math.random() * 4).toFixed(2)}s`);
+  b.style.setProperty('--rot', `${((Math.random() < 0.5 ? -1 : 1) * (0.8 + Math.random() * 1.6)).toFixed(2)}deg`);
   pintarPersonaje(b, c);
   return b;
 }
@@ -132,7 +157,7 @@ export function actualizarBancas(lista) {
         creados++;
         if (!esInicial && !reduceMovimiento()) {
           p.el.classList.add('llega');
-          if (c.id !== miUid) avisar(`${nombrePublico(c.nombre)} acaba de confirmar`);
+          if (c.id !== miUid) avisar(`${nombreVisible(c.nombre)} acaba de confirmar`);
         }
       } else if (p.firma !== firma) {
         pintarPersonaje(p.el, c);
@@ -142,10 +167,9 @@ export function actualizarBancas(lista) {
       if (p.el.parentNode !== asiento) asiento.appendChild(p.el);
     }
     if (i < lista.length) trabajo = requestAnimationFrame(paso);
-    else { trabajo = 0; if (pendienteIrAMio) irAMio(); }
+    else { trabajo = 0; asegurarFilas(lista.length); if (pendienteIrAMio) irAMio(); }
   };
   paso();
-  asegurarFilas(lista.length);
 }
 
 export function setMiUid(uid) {
@@ -156,7 +180,7 @@ export function setMiUid(uid) {
   }
 }
 
-/** Tras confirmar: lleva la vista al personaje propio y lo hace saludar. */
+/** Lleva la vista al personaje propio y lo hace saludar. */
 export function marcarIrAMio() { pendienteIrAMio = true; }
 function irAMio() {
   const p = personajes.get(miUid);
@@ -171,6 +195,59 @@ function irAMio() {
       setTimeout(() => p.el.classList.remove('destacado'), 4200);
     }, 700);
   }, 900);
+}
+
+/* ───────── Vida: saludos al azar y globitos con mensajes ───────── */
+function enPantalla(el) {
+  const r = el.getBoundingClientRect();
+  return r.bottom > 40 && r.top < innerHeight - 40 && r.width > 0;
+}
+function alAzar(filtro) {
+  const candidatos = [];
+  for (const c of ultimaLista) {
+    const p = personajes.get(c.id);
+    if (p && (!filtro || filtro(c)) && enPantalla(p.el)) candidatos.push([c, p.el]);
+  }
+  return candidatos[(Math.random() * candidatos.length) | 0];
+}
+
+function saludoAlAzar() {
+  if (!visible || document.hidden) return;
+  const elegido = alAzar();
+  if (!elegido) return;
+  const el = elegido[1];
+  if (el.classList.contains('llega')) return;
+  el.classList.add('saluda');
+  setTimeout(() => el.classList.remove('saluda'), 1700);
+}
+
+function globoAlAzar() {
+  if (!visible || document.hidden || globos.childElementCount >= 2) return;
+  const elegido = alAzar((c) => c.mensaje && !globos.querySelector(`[data-id="${CSS.escape(c.id)}"]`));
+  if (!elegido) return;
+  const [c, el] = elegido;
+  const rt = templo.getBoundingClientRect();
+  const rp = el.getBoundingClientRect();
+  const g = document.createElement('div');
+  g.className = 'globo';
+  g.dataset.id = c.id;
+  const p = document.createElement('p');
+  p.textContent = c.mensaje.length > 90 ? `${c.mensaje.slice(0, 87)}…` : c.mensaje;
+  const s = document.createElement('span');
+  s.textContent = nombreVisible(c.nombre).split(' ').slice(0, 2).join(' ');
+  g.append(p, s);
+  globos.appendChild(g);
+  // Posición: sobre la cabeza, sin salirse de la iglesia.
+  const ancho = g.offsetWidth;
+  const centro = rp.left + rp.width / 2 - rt.left;
+  const izq = Math.max(6, Math.min(rt.width - ancho - 6, centro - ancho / 2));
+  g.style.left = `${izq}px`;
+  g.style.top = `${rp.top - rt.top - g.offsetHeight - 6}px`;
+  g.style.setProperty('--cola', `${Math.max(14, Math.min(ancho - 14, centro - izq))}px`);
+  if (reduceMovimiento()) { setTimeout(() => g.remove(), 6000); return; }
+  el.classList.add('saluda');
+  setTimeout(() => el.classList.remove('saluda'), 1700);
+  g.addEventListener('animationend', () => g.remove());
 }
 
 /* ───────── Avisos en vivo ───────── */
@@ -198,10 +275,17 @@ function abrirFicha(id) {
   if (!c) return;
   ultimoFoco = document.activeElement;
   $('.ficha-avatar', ficha).innerHTML = svgPersonaje(c.avatar);
-  $('#ficha-nombre', ficha).textContent = nombrePublico(c.nombre);
+  $('#ficha-nombre', ficha).textContent = nombreVisible(c.nombre);
   const extra = (c.personas || 1) - 1;
-  const acomp = $('.ficha-acomp', ficha);
-  acomp.textContent = extra > 0 ? `Viene con ${extra} ${extra === 1 ? 'acompañante' : 'acompañantes'}` : 'Viene a acompañar a Mariangel';
+  const nombres = (c.acompanantes || []).map((n) => String(n).trim()).filter(Boolean);
+  let texto = 'Viene a acompañar a Mariangel';
+  if (extra > 0) {
+    const sinNombre = extra - nombres.length;
+    const partes = [...nombres];
+    if (sinNombre > 0) partes.push(`${sinNombre} ${sinNombre === 1 ? 'persona más' : 'personas más'}`);
+    texto = `Viene con ${partes.length > 1 ? `${partes.slice(0, -1).join(', ')} y ${partes[partes.length - 1]}` : partes[0]}`;
+  }
+  $('.ficha-acomp', ficha).textContent = texto;
   const msj = $('.ficha-mensaje', ficha);
   msj.textContent = c.mensaje ? `«${c.mensaje}»` : '';
   msj.hidden = !c.mensaje;
@@ -216,7 +300,9 @@ function cerrarFicha() {
 }
 
 export function iniciarBancas() {
+  templo = $('.templo');
   nave = $('.nave');
+  globos = $('.globos');
   contador = $('[data-bancas="total"]');
   contadorFamilias = $('[data-bancas="familias"]');
   ficha = $('.ficha');
@@ -228,6 +314,8 @@ export function iniciarBancas() {
   });
   ficha.addEventListener('click', (e) => { if (e.target === ficha || e.target.closest('.ficha-cerrar')) cerrarFicha(); });
   addEventListener('keydown', (e) => { if (e.key === 'Escape' && !ficha.hidden) cerrarFicha(); });
+  document.addEventListener('ir-a-mio', irAMio);
+  document.addEventListener('cancelar-ir-a-mio', () => { pendienteIrAMio = false; });
 
   // Si cambia el ancho (rotar el celular), se rehacen las filas.
   let t = 0;
@@ -242,9 +330,9 @@ export function iniciarBancas() {
       actualizarBancas(ultimaLista);
     }, 200);
   });
-  document.addEventListener('ir-a-mio', irAMio);
-  document.addEventListener('cancelar-ir-a-mio', () => { pendienteIrAMio = false; });
+
+  new IntersectionObserver(([e]) => { visible = e.isIntersecting; }, { threshold: 0.1 }).observe(templo);
+  if (!reduceMovimiento()) setInterval(saludoAlAzar, 1400);
+  setInterval(globoAlAzar, 4200); // los mensajes también se muestran con movimiento reducido (sin animación)
   asegurarFilas(0);
 }
-
-export { AVATARES };

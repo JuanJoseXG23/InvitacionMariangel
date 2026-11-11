@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#F6EBDD">
+  <title>Panel · Primera Comunión</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Figtree:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body class="adm">
+  <header class="adm-cabeza">
+    <div>
+      <p class="eyebrow">Panel de administración</p>
+      <h1>Primera Comunión de <span data-adm="nombre">Mariangel</span></h1>
+    </div>
+    <button class="btn btn-linea adm-salir" type="button" data-adm="salir" hidden>Cerrar sesión</button>
+  </header>
+
+  <p class="adm-demo" data-adm="demo" hidden>Modo demo: los cambios se guardan solo en este navegador y se ven en vivo en <a href="index.html?demo=1" target="_blank">la invitación demo</a>.</p>
+
+  <!-- Inicio de sesión -->
+  <section class="adm-login" data-vista="login" hidden aria-labelledby="login-titulo">
+    <form class="adm-tarjeta" data-adm="form-login" novalidate>
+      <h2 id="login-titulo">Entrar</h2>
+      <div class="campo">
+        <label for="login-email">Correo</label>
+        <input id="login-email" name="email" type="email" autocomplete="username" required>
+      </div>
+      <div class="campo">
+        <label for="login-clave">Contraseña</label>
+        <input id="login-clave" name="clave" type="password" autocomplete="current-password" required>
+      </div>
+      <button class="btn btn-oro btn-grande" type="submit">Entrar</button>
+      <p class="adm-error" role="alert" data-adm="error-login"></p>
+    </form>
+  </section>
+
+  <!-- Panel -->
+  <main class="adm-panel" data-vista="panel" hidden>
+    <nav class="adm-tabs" role="tablist" aria-label="Secciones del panel">
+      <button role="tab" id="t-evento" aria-controls="p-evento" aria-selected="true">Evento</button>
+      <button role="tab" id="t-invitados" aria-controls="p-invitados" aria-selected="false" tabindex="-1">Invitados <span class="adm-badge" data-adm="badge-inv">0</span></button>
+      <button role="tab" id="t-compartir" aria-controls="p-compartir" aria-selected="false" tabindex="-1">Compartir</button>
+    </nav>
+
+    <!-- Evento -->
+    <section id="p-evento" role="tabpanel" aria-labelledby="t-evento">
+      <form data-adm="form-evento" novalidate>
+        <fieldset class="adm-tarjeta">
+          <legend>Foto de Mariangel</legend>
+          <div class="adm-foto">
+            <div class="adm-foto-vista" data-adm="foto-vista"><span>Sin foto: se muestra la silueta</span></div>
+            <div class="adm-foto-acciones">
+              <label class="btn btn-oro adm-subir">
+                <input type="file" accept="image/*" data-adm="foto-input">
+                Subir o cambiar foto
+              </label>
+              <button class="btn btn-texto" type="button" data-adm="foto-quitar">Quitar foto</button>
+              <p class="campo-ayuda" data-adm="foto-info">Se reduce automáticamente (máx. 900 px). Usa una foto donde su cara esté centrada.</p>
+            </div>
+          </div>
+        </fieldset>
+        <div data-adm="grupos"></div>
+        <div class="adm-guardar">
+          <p class="adm-estado" role="status" data-adm="estado-evento"></p>
+          <button class="btn btn-oro" type="submit" data-adm="guardar">Guardar cambios</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- Invitados -->
+    <section id="p-invitados" role="tabpanel" aria-labelledby="t-invitados" hidden>
+      <div class="adm-totales">
+        <div><strong data-adm="tot-personas">0</strong><span>personas</span></div>
+        <div><strong data-adm="tot-familias">0</strong><span>familias</span></div>
+        <div><strong data-adm="tot-mensajes">0</strong><span>mensajes</span></div>
+        <div><strong data-adm="tot-velas">0</strong><span>velas</span></div>
+      </div>
+      <div class="adm-herramientas">
+        <label class="sr-only" for="buscar">Buscar invitado</label>
+        <input id="buscar" type="search" placeholder="Buscar por nombre o mensaje…" data-adm="buscar">
+        <button class="btn btn-linea" type="button" data-adm="csv">Exportar CSV</button>
+      </div>
+      <div class="adm-lista" data-adm="lista-inv"></div>
+
+      <h2 class="adm-subtitulo">Velas encendidas</h2>
+      <div class="adm-lista adm-lista-velas" data-adm="lista-velas"></div>
+    </section>
+
+    <!-- Compartir -->
+    <section id="p-compartir" role="tabpanel" aria-labelledby="t-compartir" hidden>
+      <div class="adm-tarjeta">
+        <h2>Enlace de la invitación</h2>
+        <div class="adm-enlace">
+          <input type="text" readonly data-adm="enlace" aria-label="Enlace de la invitación">
+          <button class="btn btn-oro" type="button" data-adm="copiar-enlace">Copiar</button>
+        </div>
+        <p><a data-adm="ver" href="index.html" target="_blank" rel="noopener">Abrir la invitación ↗</a></p>
+      </div>
+      <div class="adm-tarjeta">
+        <h2>Mensaje para WhatsApp</h2>
+        <label class="sr-only" for="texto-wa">Mensaje para WhatsApp</label>
+        <textarea id="texto-wa" rows="12" data-adm="texto-wa"></textarea>
+        <div class="adm-fila-botones">
+          <button class="btn btn-oro" type="button" data-adm="copiar-wa">Copiar mensaje</button>
+          <a class="btn btn-linea" data-adm="abrir-wa" href="#" target="_blank" rel="noopener">Abrir en WhatsApp</a>
+          <button class="btn btn-texto" type="button" data-adm="regenerar-wa">Restablecer texto</button>
+        </div>
+        <p class="adm-estado" role="status" data-adm="estado-compartir"></p>
+      </div>
+    </section>
+
+    <p class="adm-uid">Sesión: <span data-adm="email"></span> · UID: <code data-adm="uid"></code></p>
+  </main>
+
+  <script type="module" src="js/admin.js"></script>
+</body>
+</html>
