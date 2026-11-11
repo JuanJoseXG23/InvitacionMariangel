@@ -1,8 +1,8 @@
 rules_version = '2';
 
 // Reglas de la invitación de Primera Comunión de Mariangel.
-// ⚠️ Reemplaza UID_DEL_ADMIN por el UID real del usuario administrador
-//    (Firebase Console → Authentication → Users → columna "User UID").
+// Administrador: UID del usuario con correo y contraseña creado en Authentication.
+// Si se cambia el admin, actualiza el UID aquí y vuelve a publicar las reglas.
 
 service cloud.firestore {
   match /databases/{database}/documents {
@@ -11,7 +11,7 @@ service cloud.firestore {
     function isAdmin() {
       return request.auth != null
         && request.auth.token.firebase.sign_in_provider == 'password'
-        && request.auth.uid == 'UID_DEL_ADMIN';
+        && request.auth.uid == 'zSPz0FN3xVWQPUpWsxhjSUwgBSv2';
     }
 
     function registroAbierto() {
