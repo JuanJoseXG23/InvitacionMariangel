@@ -134,7 +134,7 @@ export function actualizarBancas(lista) {
   contador.textContent = String(total);
   $('[data-bancas="texto"]').textContent = total === 1 ? 'persona ya confirmó' : 'personas ya confirmaron';
   contadorFamilias.textContent = lista.length
-    ? `${lista.length} ${lista.length === 1 ? 'familia' : 'familias'} · toca a alguien para ver su mensaje`
+    ? 'Toca a alguien para ver su mensaje'
     : 'Sé el primero en ocupar una banca';
 
   asegurarFilas(lista.length);

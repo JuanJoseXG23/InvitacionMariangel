@@ -148,9 +148,9 @@ a { color: inherit; }
 .fachada-svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
 
 .torre .campana { transform-box: fill-box; transform-origin: 50% 0; }
-.portada.tanendo .campana { animation: campana-vaiven 0.92s ease-in-out 5; }
+.portada.tanendo .campana { animation: campana-vaiven 1.1s ease-in-out 4; }
 .portada.tanendo .campana:nth-of-type(2n) { animation-delay: .46s; }
-@keyframes campana-vaiven { 0%,100% { transform: rotate(0); } 30% { transform: rotate(22deg); } 70% { transform: rotate(-22deg); } }
+@keyframes campana-vaiven { 0%,100% { transform: rotate(0); } 30% { transform: rotate(8deg); } 70% { transform: rotate(-8deg); } }
 
 .vano { transition: filter 1.2s ease; }
 .portada.abierta .vano { filter: brightness(1.12) saturate(1.1); }
@@ -610,15 +610,6 @@ main { position: relative; }
 .campo-error:empty { display: none; }
 .campo-ayuda { margin: 6px 0 0; color: var(--tinta-suave); font-size: .86rem; }
 .campo-cuenta { text-align: right; }
-.contador-personas { display: flex; align-items: center; gap: 16px; }
-.paso {
-  width: 52px; height: 52px; border-radius: 50%; cursor: pointer;
-  border: 1.5px solid rgba(160, 120, 55, .55); background: #FFF8EA; color: #6B4E1E; font: 500 1.6rem/1 var(--f-texto);
-}
-.paso:disabled { opacity: .35; cursor: default; }
-#rsvp-personas-ver { min-width: 2ch; text-align: center; font: 600 1.9rem/1 var(--f-texto); color: var(--tinta); }
-.acompanantes .campo { margin-bottom: 14px; }
-.campo-acomp label { font-weight: 500; font-size: .92rem; }
 .avatares { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
 .avatar-opcion { position: relative; display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; }
 .avatar-opcion input { position: absolute; opacity: 0; width: 100%; height: 100%; margin: 0; cursor: pointer; }

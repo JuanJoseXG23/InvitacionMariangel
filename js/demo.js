@@ -28,12 +28,10 @@ const azar = () => ((semilla = (semilla * 16807) % 2147483647) / 2147483647);
 const elegir = (arr) => arr[Math.floor(azar() * arr.length)];
 
 function confirmacionFalsa(t) {
-  const personas = azar() < 0.35 ? 1 : 1 + Math.floor(azar() * 4);
-  const acompanantes = Array.from({ length: personas - 1 }, () => (azar() < 0.7 ? elegir(NOMBRES) : ''));
   return {
     nombre: `${elegir(NOMBRES)} ${elegir(APELLIDOS)} ${elegir(APELLIDOS)}`,
-    acompanantes,
-    personas,
+    acompanantes: [],
+    personas: 1,
     mensaje: elegir(MENSAJES),
     avatar: elegir(AVATARES),
     creadoEn: t,

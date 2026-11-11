@@ -4,7 +4,7 @@ import { guardarConfirmacion, borrarConfirmacion } from './data.js';
 import { campanitas } from './audio.js';
 import { confeti } from './confeti.js';
 
-const LIM = { nombre: 60, mensaje: 280, personas: 10 };
+const LIM = { nombre: 60, mensaje: 280 };
 const q = (k) => $(`[data-rsvp="${k}"]`);
 
 let form, evento = null, mia = null, editando = false, enviando = false, recienConfirmado = false;
@@ -27,29 +27,6 @@ function construirAvatares() {
     </label>`).join('');
 }
 
-function personas() { return Number(form.personas.value) || 1; }
-
-function setPersonas(n) {
-  n = Math.max(1, Math.min(LIM.personas, n));
-  form.personas.value = String(n);
-  $('#rsvp-personas-ver').textContent = String(n);
-  $$('.paso', form).forEach((b) => { b.disabled = (b.dataset.paso === '-1' && n === 1) || (b.dataset.paso === '1' && n === LIM.personas); });
-  q('personas-ayuda').textContent = n === 1 ? 'Solo tú' : `Tú y ${n - 1} ${n === 2 ? 'persona más' : 'personas más'}`;
-
-  // Campos de acompañantes: conserva lo ya escrito.
-  const cont = q('acompanantes');
-  const actuales = $$('input', cont);
-  for (let i = actuales.length; i < n - 1; i++) {
-    const id = `rsvp-acomp-${i}`;
-    const div = document.createElement('div');
-    div.className = 'campo campo-acomp';
-    div.innerHTML = `<label for="${id}">Nombre de la persona ${i + 2} <span class="opcional">(opcional)</span></label>
-      <input id="${id}" type="text" maxlength="${LIM.nombre}" autocapitalize="words" autocomplete="off">`;
-    cont.appendChild(div);
-  }
-  $$('.campo-acomp', cont).forEach((d, i) => { if (i >= n - 1) d.remove(); });
-}
-
 function errorCampo(input, msj) {
   const p = $(`#err-${input.name}`);
   input.setAttribute('aria-invalid', msj ? 'true' : 'false');
@@ -60,15 +37,14 @@ function errorCampo(input, msj) {
 function leerDatos() {
   const nombre = form.nombre.value.replace(/\s+/g, ' ').trim();
   const mensaje = form.mensaje.value.trim().slice(0, LIM.mensaje);
-  const acompanantes = $$('input', q('acompanantes')).map((i) => i.value.replace(/\s+/g, ' ').trim().slice(0, LIM.nombre));
   const avatar = form.avatar.value;
-  return { nombre, acompanantes, personas: personas(), mensaje, avatar: IDS_AVATAR.includes(avatar) ? avatar : 'nina' };
+  // Cada registro es de una sola persona.
+  return { nombre, acompanantes: [], personas: 1, mensaje, avatar: IDS_AVATAR.includes(avatar) ? avatar : 'nina' };
 }
 
 function validar(d) {
   if (d.nombre.length < 2 || !/\p{L}/u.test(d.nombre)) return ['nombre', 'Escribe tu nombre para reservar tu lugar.'];
   if (d.nombre.length > LIM.nombre) return ['nombre', `Máximo ${LIM.nombre} caracteres.`];
-  if (d.personas < 1 || d.personas > LIM.personas) return ['personas', 'Entre 1 y 10 personas.'];
   return null;
 }
 
@@ -79,8 +55,6 @@ function mostrar(vista) {
 
 function rellenar(c) {
   form.nombre.value = c.nombre || '';
-  setPersonas(c.personas || 1);
-  $$('input', q('acompanantes')).forEach((inp, i) => { inp.value = c.acompanantes?.[i] || ''; });
   form.mensaje.value = c.mensaje || '';
   q('cuenta').textContent = String(form.mensaje.value.length);
   const r = form.querySelector(`input[name="avatar"][value="${c.avatar}"]`);
@@ -98,9 +72,7 @@ function pintar() {
     $('.rsvp-gracias-avatar').innerHTML = svgPersonaje(mia.avatar);
     const pila = nombrePublico(mia.nombre).split(' ')[0];
     q('gracias-titulo').textContent = recienConfirmado ? `¡Gracias, ${pila}!` : `¡Hola, ${pila}! Ya confirmaste`;
-    const extra = (mia.personas || 1) - 1;
-    q('gracias-texto').textContent = (extra > 0 ? `Te esperamos a ti y a ${extra} ${extra === 1 ? 'persona más' : 'personas más'}. ` : 'Te esperamos con mucha alegría. ')
-      + 'Ya tienes tu lugar en la banca.';
+    q('gracias-texto').textContent = 'Te esperamos con mucha alegría. Ya tienes tu lugar en la banca.';
     q('editar').hidden = !abierto;
     return;
   }
@@ -124,12 +96,7 @@ export function actualizarRSVP({ evento: e, mia: m }) {
 export function iniciarRSVP() {
   form = q('formulario');
   construirAvatares();
-  setPersonas(1);
 
-  form.addEventListener('click', (e) => {
-    const b = e.target.closest('.paso');
-    if (b) setPersonas(personas() + Number(b.dataset.paso));
-  });
   form.mensaje.addEventListener('input', () => { q('cuenta').textContent = String(form.mensaje.value.length); });
   form.nombre.addEventListener('input', () => errorCampo(form.nombre, ''));
 
@@ -193,7 +160,7 @@ export function iniciarRSVP() {
     try {
       await borrarConfirmacion();
       mia = null; recienConfirmado = false; editando = false;
-      form.reset(); setPersonas(1); q('cuenta').textContent = '0';
+      form.reset(); q('cuenta').textContent = '0';
       pintar();
     } catch (error) {
       console.error(error);
