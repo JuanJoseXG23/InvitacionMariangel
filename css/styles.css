@@ -226,8 +226,8 @@ a { color: inherit; }
 
 /* ═════════════ CONTENIDO ═════════════ */
 main { position: relative; }
-.revelar { opacity: 0; transform: translateY(26px); transition: opacity 1s var(--ease-suave), transform 1s var(--ease-suave); }
-.revelar.visible { opacity: 1; transform: none; }
+.js-listo .revelar { opacity: 0; transform: translateY(26px); transition: opacity 1s var(--ease-suave), transform 1s var(--ease-suave); }
+.js-listo .revelar.visible { opacity: 1; transform: none; }
 
 /* ═════════════ 2. ALTAR / VITRAL ═════════════ */
 .altar {

@@ -1,15 +1,15 @@
-import { $, $$, fechaLarga, fechaCorta, horaBonita, enlaceMaps, capitalizar } from './util.js';
-import { escucharEvento, escucharColeccion, obtenerUid, DEMO_EXPLICITO, reiniciarDemo } from './data.js';
-import { construirSprite } from './avatares.js';
-import { iniciarBancas, actualizarBancas, setMiUid } from './bancas.js';
-import { iniciarRSVP, actualizarRSVP } from './rsvp.js';
-import { iniciarVelas, actualizarVelas, actualizarMensajes, setMiUidVelas, setNombreVela } from './velas.js';
-import { alCambiarSonido, setSilenciado, estaSilenciado } from './audio.js';
-import { iniciarPortada } from './portada.js';
-import { iniciarAltar, ponerFoto } from './altar.js';
-import { iniciarCuenta } from './cuenta.js';
-import { descargarICS } from './ics.js';
-import { iniciarFiesta } from './fiesta.js';
+import { $, $$, fechaLarga, fechaCorta, horaBonita, enlaceMaps, capitalizar } from './util.js?v=20261111182028';
+import { escucharEvento, escucharColeccion, obtenerUid, DEMO_EXPLICITO, reiniciarDemo } from './data.js?v=20261111182028';
+import { construirSprite } from './avatares.js?v=20261111182028';
+import { iniciarBancas, actualizarBancas, setMiUid } from './bancas.js?v=20261111182028';
+import { iniciarRSVP, actualizarRSVP } from './rsvp.js?v=20261111182028';
+import { iniciarVelas, actualizarVelas, actualizarMensajes, setMiUidVelas, setNombreVela } from './velas.js?v=20261111182028';
+import { alCambiarSonido, setSilenciado, estaSilenciado } from './audio.js?v=20261111182028';
+import { iniciarPortada } from './portada.js?v=20261111182028';
+import { iniciarAltar, ponerFoto } from './altar.js?v=20261111182028';
+import { iniciarCuenta } from './cuenta.js?v=20261111182028';
+import { descargarICS } from './ics.js?v=20261111182028';
+import { iniciarFiesta } from './fiesta.js?v=20261111182028';
 
 let evento = null;
 
@@ -142,6 +142,8 @@ function iniciarRevelado() {
 }
 
 /* ───────────── Arranque ───────────── */
+// Solo si todo el JS cargó bien se ocultan los bloques para animarlos al aparecer.
+document.documentElement.classList.add('js-listo');
 if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
 window.scrollTo(0, 0);
 

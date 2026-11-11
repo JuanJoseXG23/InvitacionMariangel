@@ -1,8 +1,8 @@
-import { $, $$, fechaColombia, nombrePublico } from './util.js';
-import { AVATARES, IDS_AVATAR, svgPersonaje } from './avatares.js';
-import { guardarConfirmacion, borrarConfirmacion } from './data.js';
-import { campanitas } from './audio.js';
-import { confeti } from './confeti.js';
+import { $, $$, fechaColombia, nombrePublico } from './util.js?v=20261111182028';
+import { AVATARES, IDS_AVATAR, svgPersonaje } from './avatares.js?v=20261111182028';
+import { guardarConfirmacion, borrarConfirmacion } from './data.js?v=20261111182028';
+import { campanitas } from './audio.js?v=20261111182028';
+import { confeti } from './confeti.js?v=20261111182028';
 
 const LIM = { nombre: 60, mensaje: 280 };
 const q = (k) => $(`[data-rsvp="${k}"]`);
