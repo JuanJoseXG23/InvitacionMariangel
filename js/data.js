@@ -1,6 +1,6 @@
 // Capa de datos: Firestore en producción, datos locales en modo demo (?demo=1).
-import { EVENTO_DEFECTO } from './defaults.js?v=20261111184712';
-import { firebaseConfig, firebaseListo, FIREBASE_SDK, APP_CHECK_SITE_KEY } from './firebase-config.js?v=20261111184712';
+import { EVENTO_DEFECTO } from './defaults.js?v=20261111185342';
+import { firebaseConfig, firebaseListo, FIREBASE_SDK, APP_CHECK_SITE_KEY } from './firebase-config.js?v=20261111185342';
 
 const params = new URLSearchParams(location.search);
 export const DEMO_EXPLICITO = params.get('demo') === '1';
@@ -106,7 +106,7 @@ function prepararDemo() {
       for (const col of Object.keys(oyentesDemo)) if (e.key === claveDemo(col)) emitirDemo(col);
     });
     if (!DEMO_EXPLICITO || /admin.html$/.test(location.pathname)) return;
-    const demo = await import('./demo.js?v=20261111184712');
+    const demo = await import('./demo.js?v=20261111185342');
     if (localStorage.getItem(claveDemo('confirmaciones')) === null) {
       const { confirmaciones, velas } = demo.sembrar();
       guardarJSON(claveDemo('confirmaciones'), confirmaciones);

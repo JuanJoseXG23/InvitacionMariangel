@@ -1,6 +1,6 @@
-import { $, reduceMovimiento } from './util.js?v=20261111184712';
-import { encenderVela } from './data.js?v=20261111184712';
-import { campanitas } from './audio.js?v=20261111184712';
+import { $, reduceMovimiento } from './util.js?v=20261111185342';
+import { encenderVela } from './data.js?v=20261111185342';
+import { campanitas } from './audio.js?v=20261111185342';
 
 const MAX_MURO = 120; // velas dibujadas; el resto se resume en "+N"
 const q = (k) => $(`[data-vela="${k}"]`);

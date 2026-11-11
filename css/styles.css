@@ -854,15 +854,15 @@ main { position: relative; }
 
 /* ═════════════ Marca de inicio JJG Systems y firma ═════════════ */
 .marca {
-  --jjg: #2f8cff;
+  --jjg: #C29A4E;
   position: fixed; inset: 0; z-index: 120; display: grid; place-items: center; overflow: hidden; cursor: pointer;
-  background: #05070d; font-family: "Montserrat", "Segoe UI", system-ui, sans-serif;
+  background: radial-gradient(circle at 50% 46%, #FFFDF8 0%, #F8F0E4 60%, #F1E4D0 100%); font-family: "Montserrat", "Segoe UI", system-ui, sans-serif;
   /* Seguro: si el JS no corre, la marca se va sola */
   animation: marca-auto .5s ease 2.6s forwards;
 }
 .marca::before {
   content: ""; position: absolute; left: 50%; top: 50%; width: 120vmax; height: 120vmax; translate: -50% -50%;
-  background: radial-gradient(circle, rgba(47, 140, 255, .18), transparent 45%);
+  background: radial-gradient(circle, rgba(255, 228, 170, .55), transparent 42%);
   animation: jjg-brillo 1.4s cubic-bezier(.16, 1, .3, 1) both;
 }
 @keyframes jjg-brillo { from { opacity: 0; transform: scale(.6); } }
@@ -880,13 +880,13 @@ main { position: relative; }
 .marca-jjg { font-weight: 800; font-size: clamp(56px, 16vw, 120px); line-height: .9; letter-spacing: .03em; white-space: nowrap; }
 .marca-jjg span {
   display: inline-block; color: transparent;
-  background: linear-gradient(180deg, #fff 30%, #a9cdff 140%); -webkit-background-clip: text; background-clip: text;
-  filter: blur(0) drop-shadow(0 0 18px rgba(47, 140, 255, .55));
+  background: linear-gradient(180deg, #4C3A28 10%, #8F6A30 70%, #C29A4E 100%); -webkit-background-clip: text; background-clip: text;
+  filter: blur(0) drop-shadow(0 4px 14px rgba(194, 154, 78, .35));
   animation: jjg-letra .6s cubic-bezier(.16, 1, .3, 1) both;
 }
 .marca-jjg span:nth-child(2) { animation-delay: .08s; }
 .marca-jjg span:nth-child(3) { animation-delay: .16s; }
-@keyframes jjg-letra { from { opacity: 0; transform: translateY(.5em); filter: blur(6px) drop-shadow(0 0 18px rgba(47, 140, 255, .55)); } }
+@keyframes jjg-letra { from { opacity: 0; transform: translateY(.5em); filter: blur(6px) drop-shadow(0 4px 14px rgba(194, 154, 78, .35)); } }
 .marca-linea {
   width: 100%; height: 2px; margin: .45em 0 .5em; font-size: clamp(13px, 3.2vw, 22px);
   background: linear-gradient(90deg, transparent, var(--jjg), transparent);
@@ -895,27 +895,27 @@ main { position: relative; }
 @keyframes jjg-linea { from { opacity: 0; transform: scaleX(0); } }
 .marca-systems {
   font-weight: 300; font-size: clamp(13px, 3.2vw, 22px); letter-spacing: .62em; margin-right: -.62em;
-  color: #e3ebf7; white-space: nowrap;
+  color: #6B5640; white-space: nowrap;
 }
 .marca-systems span { animation: jjg-tecla .01s steps(1) calc(.5s + var(--i) * 55ms) both; }
 @keyframes jjg-tecla { from { visibility: hidden; } }
 
 .marca-firma {
   position: fixed; z-index: 75; right: max(10px, env(safe-area-inset-right)); bottom: max(10px, env(safe-area-inset-bottom));
-  margin: 0; padding: 5px 11px 5px 10px; border-radius: 999px; pointer-events: none;
-  display: inline-flex; align-items: baseline; gap: 5px;
-  background: rgba(5, 7, 13, .82); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
-  border: 1px solid rgba(47, 140, 255, .45); box-shadow: 0 4px 14px -6px rgba(5, 7, 13, .45), 0 0 10px -4px rgba(47, 140, 255, .6);
-  font-family: "Montserrat", "Segoe UI", system-ui, sans-serif; color: #eef2f8; line-height: 1;
+  margin: 0; padding: 3px 8px 3px 7px; border-radius: 999px; pointer-events: none;
+  display: inline-flex; align-items: baseline; gap: 3px;
+  background: rgba(255, 252, 245, .82); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+  border: 1px solid rgba(194, 154, 78, .4); box-shadow: 0 3px 10px -6px rgba(96, 70, 30, .35);
+  font-family: "Montserrat", "Segoe UI", system-ui, sans-serif; color: #5C4422; line-height: 1;
   opacity: 0; transform: translateY(6px); transition: opacity .45s ease .45s, transform .45s ease .45s;
   /* Seguro: aparece sola si el JS no corre */
   animation: firma-auto .4s ease 3.2s forwards;
 }
-.marca-firma.visible, .sin-intro .marca-firma { opacity: .95; transform: none; animation: none; }
+.marca-firma.visible, .sin-intro .marca-firma { opacity: .9; transform: none; animation: none; }
 @keyframes firma-auto { to { opacity: .95; transform: none; } }
-.marca-firma-by { font: italic 500 .62rem var(--f-texto); color: #a9cdff; }
-.marca-firma b { font-weight: 800; font-size: .72rem; letter-spacing: .04em; }
-.marca-firma-sys { font-weight: 300; font-size: .56rem; letter-spacing: .28em; text-transform: uppercase; }
+.marca-firma-by { font: italic 500 .72rem var(--f-titulo); color: var(--oro-texto); }
+.marca-firma b { font-weight: 800; font-size: .56rem; letter-spacing: .04em; }
+.marca-firma-sys { font-weight: 300; font-size: .46rem; letter-spacing: .24em; text-transform: uppercase; color: #6B5640; }
 @media (prefers-reduced-motion: reduce) {
   .marca { display: none; }
   .marca-firma { opacity: .95; transform: none; animation: none; }

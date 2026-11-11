@@ -1,4 +1,4 @@
-import { reduceMovimiento } from './util.js?v=20261111184712';
+import { reduceMovimiento } from './util.js?v=20261111185342';
 
 const COLORES = ['#E8CD8E', '#D9B26F', '#F4D3DD', '#D88AA1', '#AFC8E6', '#7CA6D8', '#FFFFFF', '#C29A4E'];
 
