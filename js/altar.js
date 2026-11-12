@@ -1,4 +1,4 @@
-import { $, $$, reduceMovimiento } from './util.js?v=20261111185342';
+import { $, $$, reduceMovimiento } from './util.js?v=20261111190218';
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
 const el = (tag, attrs = {}, padre) => {

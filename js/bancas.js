@@ -1,5 +1,5 @@
-import { $, reduceMovimiento } from './util.js?v=20261111185342';
-import { svgPersonaje } from './avatares.js?v=20261111185342';
+import { $, reduceMovimiento } from './util.js?v=20261111190218';
+import { svgPersonaje } from './avatares.js?v=20261111190218';
 
 // La nave se ve desde la entrada: el altar al fondo (arriba) y las bancas
 // acercándose hacia quien mira (abajo, más grandes). Los primeros en confirmar

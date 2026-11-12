@@ -902,7 +902,7 @@ main { position: relative; }
 
 .marca-firma {
   position: fixed; z-index: 75; right: max(10px, env(safe-area-inset-right)); bottom: max(10px, env(safe-area-inset-bottom));
-  margin: 0; padding: 3px 8px 3px 7px; border-radius: 999px; pointer-events: none;
+  margin: 0; padding: 3px 8px 3px 7px; border-radius: 999px; cursor: pointer; -webkit-tap-highlight-color: transparent;
   display: inline-flex; align-items: baseline; gap: 3px;
   background: rgba(255, 252, 245, .82); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
   border: 1px solid rgba(194, 154, 78, .4); box-shadow: 0 3px 10px -6px rgba(96, 70, 30, .35);
@@ -920,3 +920,22 @@ main { position: relative; }
   .marca { display: none; }
   .marca-firma { opacity: .95; transform: none; animation: none; }
 }
+/* Área táctil más grande sin agrandar la firma */
+.marca-firma::before { content: ""; position: absolute; inset: -12px -8px -10px -12px; }
+.marca-firma:focus-visible { outline: 2px solid var(--oro); outline-offset: 2px; }
+.marca-firma[aria-expanded="true"] { opacity: 1; border-color: rgba(194, 154, 78, .75); }
+
+/* Tarjetita de contacto (muy discreta) */
+.jjg-contacto {
+  position: fixed; z-index: 76; right: max(10px, env(safe-area-inset-right)); bottom: calc(max(10px, env(safe-area-inset-bottom)) + 30px);
+  width: min(230px, calc(100vw - 20px)); padding: 10px 12px 11px; border-radius: 14px;
+  background: rgba(255, 253, 248, .97); border: 1px solid rgba(194, 154, 78, .45);
+  box-shadow: 0 12px 28px -14px rgba(96, 70, 30, .5);
+  font: 400 .76rem/1.4 var(--f-texto); color: #5C4A35; text-align: left;
+  transform-origin: 100% 100%; animation: jjg-pop .22s cubic-bezier(.2, .9, .3, 1);
+}
+@keyframes jjg-pop { from { opacity: 0; transform: translateY(6px) scale(.96); } }
+.jjg-contacto-t { margin: 0 0 6px; font: 600 .62rem/1.2 "Montserrat", var(--f-texto); letter-spacing: .14em; text-transform: uppercase; color: var(--oro-texto); }
+.jjg-contacto-a { display: block; color: #5C4A35; text-decoration: none; }
+.jjg-contacto-a span { display: inline-block; margin-top: 2px; font-weight: 600; color: #8A6424; text-decoration: underline; text-underline-offset: 2px; }
+.jjg-contacto-a:hover span, .jjg-contacto-a:focus-visible span { color: #5C4422; }

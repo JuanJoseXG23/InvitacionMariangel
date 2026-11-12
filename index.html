@@ -27,8 +27,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Figtree:wght@400;500;600&family=Montserrat:wght@300;800&display=swap">
-  <link rel="stylesheet" href="css/styles.css?v=20261111185342">
-  <link rel="modulepreload" href="js/main.js?v=20261111185342">
+  <link rel="stylesheet" href="css/styles.css?v=20261111190218">
+  <link rel="modulepreload" href="js/main.js?v=20261111190218">
 </head>
 <body class="portada-activa">
 
@@ -40,7 +40,11 @@
       <div class="marca-systems"><span style="--i:0">S</span><span style="--i:1">Y</span><span style="--i:2">S</span><span style="--i:3">T</span><span style="--i:4">E</span><span style="--i:5">M</span><span style="--i:6">S</span></div>
     </div>
   </div>
-  <p class="marca-firma"><span class="marca-firma-by">By</span> <b>JJG</b> <span class="marca-firma-sys">Systems</span></p>
+  <button class="marca-firma" type="button" aria-expanded="false" aria-controls="jjg-contacto" aria-label="Hecho por JJG Systems: ver contacto"><span class="marca-firma-by">By</span> <b>JJG</b> <span class="marca-firma-sys">Systems</span></button>
+  <div class="jjg-contacto" id="jjg-contacto" role="dialog" aria-label="JJG Systems" hidden>
+    <p class="jjg-contacto-t">Diseño de webs, apps y más</p>
+    <a class="jjg-contacto-a" href="https://wa.me/573002513594?text=Hola%20Juan%20Jos%C3%A9%2C%20vi%20la%20invitaci%C3%B3n%20de%20la%20Primera%20Comuni%C3%B3n%20de%20Mariangel%20y%20me%20gustar%C3%ADa%20hablar%20contigo%20sobre%20un%20dise%C3%B1o%20web." target="_blank" rel="noopener">¿Quieres contactar a Juan José Gómez? <span>Toca aquí</span></a>
+  </div>
 
   <!-- ══════════ Iconos reutilizables ══════════ -->
   <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
@@ -715,6 +719,6 @@
   <p class="aviso" role="status" aria-live="polite"></p>
   <p class="insignia-demo" hidden>Modo demo</p>
 
-  <script type="module" src="js/main.js?v=20261111185342"></script>
+  <script type="module" src="js/main.js?v=20261111190218"></script>
 </body>
 </html>

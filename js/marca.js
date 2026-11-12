@@ -6,16 +6,30 @@
 const MOMENTO_SALIDA = 1300; // ms desde que abre la página
 const CLAVE = 'jjgIntroVisto';
 
+function iniciarContacto(firma) {
+  const tarjeta = document.getElementById('jjg-contacto');
+  if (!tarjeta) return;
+  const abrir = (si) => {
+    tarjeta.hidden = !si;
+    firma.setAttribute('aria-expanded', String(si));
+  };
+  firma.addEventListener('click', (e) => { e.stopPropagation(); abrir(tarjeta.hidden); });
+  document.addEventListener('click', (e) => { if (!tarjeta.hidden && !tarjeta.contains(e.target)) abrir(false); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !tarjeta.hidden) { abrir(false); firma.focus(); } });
+  if (new URLSearchParams(location.search).get('vista') === 'contacto') abrir(true); // depuración
+}
+
 export function iniciarMarca() {
   const splash = document.querySelector('.marca');
   const firma = document.querySelector('.marca-firma');
   if (!firma) return;
+  iniciarContacto(firma);
   const vista = new URLSearchParams(location.search).get('vista');
   const reducido = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const yaVista = document.documentElement.classList.contains('sin-intro');
 
   if (splash && vista === 'marca') { splash.classList.add('quieta'); return; } // depuración
-  if (!splash || reducido || yaVista || vista === 'firma') {
+  if (!splash || reducido || yaVista || vista === 'firma' || vista === 'contacto') {
     splash?.remove();
     firma.classList.add('visible');
     return;
